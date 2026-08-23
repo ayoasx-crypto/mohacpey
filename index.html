@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة متابعة الأرباح المباشرة (M-POS)</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; background-color: #0f172a; color: #f8fafc; margin: 0; padding: 15px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .status { padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; background: #1e293b; border: 1px solid #334155; }
+        .status.online { color: #4ade80; border-color: #22c55e; }
+        .card { background: #1e293b; border-radius: 12px; padding: 15px; margin-bottom: 15px; border: 1px solid #334155; }
+        .card-title { font-size: 0.9rem; color: #94a3b8; margin-bottom: 5px; }
+        .card-value { font-size: 1.8rem; font-weight: bold; }
+        .sales-val { color: #38bdf8; }
+        .profit-val { color: #4ade80; }
+        .orders-val { color: #c084fc; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.85rem; }
+        th, td { text-align: right; padding: 8px; border-bottom: 1px solid #334155; }
+        th { color: #94a3b8; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h2>📊 لوحة M-POS المباشرة</h2>
+        <div id="status" class="status">⚡ جاري الاتصال...</div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">إجمالي المبيعات</div>
+        <div id="sales" class="card-value sales-val">0.00 د.ل</div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">صافي الأرباح الحقيقية</div>
+        <div id="profit" class="card-value profit-val">0.00 د.ل</div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">عدد الفواتير</div>
+        <div id="orders" class="card-value orders-val">0 فاتورة</div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">أفضل المنتجات مباعاً</div>
+        <canvas id="productsChart"></canvas>
+    </div>
+
+    <div class="card">
+        <div class="card-title">حركة المبيعات المباشرة</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>رقم</th>
+                    <th>المنتج</th>
+                    <th>الكمية</th>
+                    <th>الإجمالي</th>
+                </tr>
+            </thead>
+            <tbody id="historyTable"></tbody>
+        </table>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('productsChart').getContext('2d');
+        const productsChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: [],
+                datasets: [{ label: 'الكمية المباعة', data: [], backgroundColor: ['#38bdf8', '#4ade80', '#c084fc', '#fb923c', '#f43f5e'] }]
+            },
+            options: { responsive: true, plugins: { legend: { display: false } } }
+        });
+
+        async function fetchLiveDB() {
+            try {
+                const res = await fetch('/api/data');
+                const data = await res.json();
+
+                document.getElementById('status').innerText = '🟢 متصل بالمنظومة الحية';
+                document.getElementById('status').className = 'status online';
+
+                document.getElementById('sales').innerText = data.sales.toFixed(2) + ' د.ل';
+                document.getElementById('profit').innerText = '+' + data.profit.toFixed(2) + ' د.ل';
+                document.getElementById('orders').innerText = data.orders + ' فاتورة';
+
+                productsChart.data.labels = data.products;
+                productsChart.data.datasets[0].data = data.quantities;
+                productsChart.update();
+
+                const tableBody = document.getElementById('historyTable');
+                tableBody.innerHTML = '';
+                data.history.forEach(row => {
+                    tableBody.innerHTML += `
+                        <tr>
+                            <td>#${row.id}</td>
+                            <td>${row.product}</td>
+                            <td>${row.qty}</td>
+                            <td>${row.total.toFixed(2)} د.ل</td>
+                        </tr>
+                    `;
+                });
+            } catch (err) {
+                document.getElementById('status').innerText = '🔴 في انتظار الخادم...';
+                document.getElementById('status').className = 'status';
+            }
+        }
+
+        setInterval(fetchLiveDB, 2000);
+        fetchLiveDB();
+    </script>
+</body>
+</html>
