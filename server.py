@@ -44,11 +44,10 @@ def init_db():
 
 init_db()
 
-# 1. عرض الواجهة الرئيسية
-@app.route('/')
-def home():
-    return send_from_directory(os.path.dirname(os.path.abspath(__file__)), 'index.html')
-
+# مسار لعرض الصور والملفات الثابتة مثل اللوجو
+@app.route('/<path:filename>')
+def serve_file(filename):
+    return send_from_directory(os.path.dirname(os.path.abspath(__file__)), filename)
 # 2. مسار تسجيل الدخول
 @app.route('/api/login', methods=['POST'])
 def login_store():
