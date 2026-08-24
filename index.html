@@ -7,7 +7,7 @@
     <style>
         * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 0; }
         body { background: #0b0f19; color: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-        .card { background: #151c2c; padding: 25px; border-radius: 20px; border: 1px solid #2a3447; width: 100%; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+        .card { background: #151c2c; padding: 25px; border-radius: 20px; border: 1px solid #2a3447; width: 100%; max-width: 420px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
         .logo { width: 70px; height: 70px; display: block; margin: 0 auto 10px auto; border-radius: 14px; }
         h1 { font-size: 20px; color: #10b981; text-align: center; margin-bottom: 5px; }
         p.subtitle { color: #9ca3af; font-size: 13px; text-align: center; margin-bottom: 20px; }
@@ -30,93 +30,107 @@
         .api-key-display { background: #111827; padding: 8px; border-radius: 6px; color: #34d399; font-family: monospace; font-size: 15px; margin: 8px 0; word-break: break-all; border: 1px dashed #10b981; }
         .btn-copy { background: #3b82f6; border: none; color: white; padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; margin-top: 5px; }
 
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; padding: 20px; z-index: 100; }
-        .modal-content { background: #151c2c; border-radius: 16px; padding: 20px; max-width: 450px; width: 100%; max-height: 90vh; overflow-y: auto; text-align: right; border: 1px solid #374151; }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .close-btn { background: none; border: none; color: #ef4444; font-size: 20px; cursor: pointer; }
-        .step { background: #1f2937; padding: 10px; border-radius: 8px; margin-bottom: 8px; font-size: 13px; border-right: 3px solid #10b981; line-height: 1.5; }
+        /* تنسيقات لوحة التحكم Dashboard */
+        .dash-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #2a3447; padding-bottom: 15px; margin-bottom: 15px; }
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .stat-card { background: #1f2937; padding: 15px; border-radius: 12px; border: 1px solid #374151; text-align: center; }
+        .stat-card h3 { font-size: 11px; color: #9ca3af; margin-bottom: 5px; }
+        .stat-card p { font-size: 18px; font-weight: bold; color: #10b981; }
+        .btn-logout { background: #ef4444; border: none; color: white; padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div class="card">
-    <img src="logo.png" alt="مُحاسبي" class="logo">
-    <h1>تطبيق مُحاسبي</h1>
-    <p class="subtitle">متابعة مبيعات محلك من موبايلك لحظياً</p>
+    <img src="logo.png" alt="مُحاسبي" class="logo" onerror="this.style.display='none'">
 
-    <div class="tab-buttons">
-        <button class="tab-btn active" id="loginTab" onclick="switchTab('login')">تسجيل الدخول</button>
-        <button class="tab-btn" id="registerTab" onclick="switchTab('register')">إنشاء حساب جديد</button>
+    <!-- قسم تسجيل الدخول وإنشاء الحساب -->
+    <div id="authSection">
+        <h1>تطبيق مُحاسبي</h1>
+        <p class="subtitle">متابعة مبيعات محلك من موبايلك لحظياً</p>
+
+        <div class="tab-buttons">
+            <button class="tab-btn active" id="loginTab" onclick="switchTab('login')">تسجيل الدخول</button>
+            <button class="tab-btn" id="registerTab" onclick="switchTab('register')">إنشاء حساب جديد</button>
+        </div>
+
+        <!-- نموذج تسجيل الدخول -->
+        <form id="loginForm">
+            <div class="form-group">
+                <label>اسم المستخدم</label>
+                <input type="text" id="loginUsername" placeholder="أدخل اسم المستخدم" required>
+            </div>
+            <div class="form-group">
+                <label>كلمة السر</label>
+                <input type="password" id="loginPassword" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="btn-submit">دخول المحل</button>
+        </form>
+
+        <!-- نموذج إنشاء حساب جديد -->
+        <form id="registerForm" style="display: none;">
+            <div class="form-group">
+                <label>اسم المحل / التاجر</label>
+                <input type="text" id="regStoreName" placeholder="مثال: محل الأمل" required>
+            </div>
+            <div class="form-group">
+                <label>اسم المستخدم (للدخول مستقبلاً)</label>
+                <input type="text" id="regUsername" placeholder="مثال: alamal_store" required>
+            </div>
+            <div class="form-group">
+                <label>كلمة السر</label>
+                <input type="password" id="regPassword" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="btn-submit">إنشاء الحساب والحصول على المفتاح</button>
+        </form>
+
+        <!-- صندوق عرض الـ API Key -->
+        <div id="successBox" class="success-box">
+            <h3 style="margin: 0 0 5px 0; font-size: 15px; color: #34d399;">🎉 تم إنشاء الحساب بنجاح!</h3>
+            <p style="font-size: 12px; margin: 0; color: #d1fae5;">هذا هو مفتاح الربط (API Key) الخاص بمحلك:</p>
+            <div id="apiKeyText" class="api-key-display">KEY-XXXXXXXX</div>
+            <button class="btn-copy" onclick="copyApiKey()">📋 نسخ مفتاح الربط</button>
+        </div>
     </div>
 
-    <!-- نموذج تسجيل الدخول -->
-    <form id="loginForm">
-        <div class="form-group">
-            <label>اسم المستخدم</label>
-            <input type="text" id="loginUsername" placeholder="أدخل اسم المستخدم" required>
-        </div>
-        <div class="form-group">
-            <label>كلمة السر</label>
-            <input type="password" id="loginPassword" placeholder="••••••••" required>
-        </div>
-        <button type="submit" class="btn-submit">دخول المحل</button>
-    </form>
-
-    <!-- نموذج إنشاء حساب جديد -->
-    <form id="registerForm" style="display: none;">
-        <div class="form-group">
-            <label>اسم المحل / التاجر</label>
-            <input type="text" id="regStoreName" placeholder="مثال: محل الأمل" required>
-        </div>
-        <div class="form-group">
-            <label>اسم المستخدم (للدخول مستقبلاً)</label>
-            <input type="text" id="regUsername" placeholder="مثال: alamal_store" required>
-        </div>
-        <div class="form-group">
-            <label>كلمة السر</label>
-            <input type="password" id="regPassword" placeholder="••••••••" required>
-        </div>
-        <button type="submit" class="btn-submit">إنشاء الحساب والحصول على المفتاح</button>
-    </form>
-
-    <!-- صندوق عرض الـ API Key -->
-    <div id="successBox" class="success-box">
-        <h3 style="margin: 0 0 5px 0; font-size: 15px; color: #34d399;">🎉 تم إنشاء الحساب بنجاح!</h3>
-        <p style="font-size: 12px; margin: 0; color: #d1fae5;">هذا هو مفتاح الربط (API Key) الخاص بمحلك:</p>
-        <div id="apiKeyText" class="api-key-display">KEY-XXXXXXXX</div>
-        <button class="btn-copy" onclick="copyApiKey()">📋 نسخ مفتاح الربط</button>
-        <p style="font-size: 11px; color: #9ca3af; margin-top: 8px;">احفظ هذا المفتاح لتضعه في برنامج الكاشير على الكمبيوتر.</p>
-    </div>
-
-    <button class="btn-tutorial" onclick="openModal()">
-        📺 كيف تقوم بربط منظومتك بالتطبيق؟
-    </button>
-</div>
-
-<!-- Modal تعليمات الربط -->
-<div class="modal" id="tutorialModal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3 style="margin:0; color:#10b981; font-size:16px;">طريقة ربط المنظومة بالتطبيق</h3>
-            <button class="close-btn" onclick="closeModal()">✕</button>
+    <!-- قسم لوحة التحكم الداخلي Dashboard -->
+    <div id="dashboardSection" style="display: none;">
+        <div class="dash-header">
+            <div>
+                <h2 id="displayStoreName" style="font-size: 16px; color: #fff;">اسم المحل</h2>
+                <p style="font-size: 11px; color: #9ca3af;">لوحة متابعة المبيعات</p>
+            </div>
+            <button class="btn-logout" onclick="logout()">خروج</button>
         </div>
 
-        <div style="margin-bottom: 15px;">
-            <video width="100%" controls style="border-radius: 10px; background: #000;">
-                <source src="tutorial.mp4" type="video/mp4">
-                متصفحك لا يدعم تشغيل الفيديو.
-            </video>
+        <div class="stat-grid">
+            <div class="stat-card">
+                <h3>إجمالي المبيعات</h3>
+                <p id="totalSales">0.00 د.ل</p>
+            </div>
+            <div class="stat-card">
+                <h3>إجمالي الأرباح</h3>
+                <p id="totalProfit">0.00 د.ل</p>
+            </div>
         </div>
 
-        <h4 style="color:#fff; margin:0 0 10px 0; font-size:14px;">خطوات الربط:</h4>
-        <div class="step">1️⃣ انسخ <b>مفتاح الـ API</b> الخاص بمحلك الظاهر عند إنشاء الحساب.</div>
-        <div class="step">2️⃣ افتح برنامج الكاشير (الكامبيو) على جهاز الكمبيوتر في المحل.</div>
-        <div class="step">3️⃣ اذهب إلى قائمة <b>إعدادات السيرفر والربط Cloud</b>.</div>
-        <div class="step">4️⃣ الصق مفتاح الـ API وضَع رابط السيرفر واضغط <b>حفظ واختبار الاتصال</b>.</div>
+        <div class="stat-card" style="margin-bottom: 15px;">
+            <h3>مفتاح الربط (API Key) الخاص بك:</h3>
+            <p id="displayApiKey" style="font-size: 12px; color: #38bdf8; word-break: break-all; margin-top: 5px;">-</p>
+        </div>
     </div>
 </div>
 
 <script>
+    // التحقق التلقائي عند فتح الصفحة
+    window.onload = function() {
+        const storeName = localStorage.getItem('store_name');
+        const apiKey = localStorage.getItem('api_key');
+        if (storeName && apiKey) {
+            showDashboard(storeName, apiKey);
+        }
+    };
+
     function switchTab(type) {
         document.getElementById('successBox').style.display = 'none';
         if (type === 'login') {
@@ -149,8 +163,7 @@
             if (res.ok) {
                 localStorage.setItem('store_name', data.store_name);
                 localStorage.setItem('api_key', data.api_key);
-                alert(`أهلاً بك مجدداً في ${data.store_name}!`);
-                location.reload();
+                showDashboard(data.store_name, data.api_key);
             } else {
                 alert(data.error || 'فشل تسجيل الدخول');
             }
@@ -186,14 +199,24 @@
         }
     });
 
+    function showDashboard(storeName, apiKey) {
+        document.getElementById('authSection').style.display = 'none';
+        document.getElementById('dashboardSection').style.display = 'block';
+        document.getElementById('displayStoreName').innerText = storeName;
+        document.getElementById('displayApiKey').innerText = apiKey;
+    }
+
+    function logout() {
+        localStorage.clear();
+        document.getElementById('dashboardSection').style.display = 'none';
+        document.getElementById('authSection').style.display = 'block';
+    }
+
     function copyApiKey() {
         const key = document.getElementById('apiKeyText').innerText;
         navigator.clipboard.writeText(key);
         alert('تم نسخ مفتاح الـ API بنجاح!');
     }
-
-    function openModal() { document.getElementById('tutorialModal').style.display = 'flex'; }
-    function closeModal() { document.getElementById('tutorialModal').style.display = 'none'; }
 </script>
 
 </body>
