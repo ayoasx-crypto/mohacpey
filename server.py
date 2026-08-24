@@ -1,6 +1,6 @@
 import sqlite3
 import secrets
-import uuid
+import os
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 
@@ -47,7 +47,33 @@ init_db()
 # مسار عرض الواجهة الرئيسية (index.html)
 @app.route('/')
 def home():
-    return send_from_directory('.', 'index.html')
+    return send_from_directory(os.path.dirname(os.path.abspath(__file__)), 'index.html')
+
+# مسار تسجيل الدخول للمحل
+@app.route('/api/login', methods=['POST'])
+def login_store():
+    data = request.get_json() or {}
+    username = data.get('username')
+    password = data.get('password')
+
+    if not username or not password:
+        return jsonify({'error': 'يرجى إدخال اسم المستخدم وكلمة السر'}), 400
+
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, store_name, api_key FROM stores WHERE username = ? AND password = ?", (username, password))
+    store = cursor.fetchone()
+    conn.close()
+
+    if store:
+        return jsonify({
+            'status': 'success',
+            'store_id': store[0],
+            'store_name': store[1],
+            'api_key': store[2]
+        }), 200
+    else:
+        return jsonify({'error': 'اسم المستخدم أو كلمة السر غير صحيحة'}), 401
 
 # مسار تسجيل محل جديد (يحفظ في قاعدة البيانات ويولد api_key خاص)
 @app.route('/api/register', methods=['POST'])
