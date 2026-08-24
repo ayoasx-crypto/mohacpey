@@ -13,7 +13,7 @@ def init_db():
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
     
-    # 1. جدول المحلات/المستخدمين
+    # جدول المحلات/المستخدمين
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS stores (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -25,31 +25,31 @@ def init_db():
         )
     ''')
 
-    # 2. إضافة العمود store_id لجدول المبيعات إذا لم يكن موجوداً
-    cursor.execute("PRAGMA table_info(sales)")
-    columns = [column[1] for column in cursor.fetchall()]
-    if 'store_id' not in columns:
-        cursor.execute("ALTER TABLE sales ADD COLUMN store_id INTEGER DEFAULT 1")
+    # جدول المبيعات
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS sales (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            store_id INTEGER NOT NULL,
+            invoice_id TEXT,
+            total_amount REAL NOT NULL,
+            profit REAL NOT NULL,
+            items_count INTEGER DEFAULT 1,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (store_id) REFERENCES stores (id)
+        )
+    ''')
 
-    # 3. إنشاء حساب تجريبي افتراضي (Demo Store) إذا لم تكن هناك محلات
-    cursor.execute("SELECT count(*) FROM stores")
-    if cursor.fetchone()[0] == 0:
-        cursor.execute('''
-            INSERT INTO stores (store_name, username, password, api_key)
-            VALUES (?, ?, ?, ?)
-        ''', ("المحل التجريبي", "demo", "demo123", "DEMO-KEY-123456"))
-        
     conn.commit()
     conn.close()
 
 init_db()
 
-# مسار عرض الواجهة الرئيسية (index.html)
+# 1. عرض الواجهة الرئيسية
 @app.route('/')
 def home():
     return send_from_directory(os.path.dirname(os.path.abspath(__file__)), 'index.html')
 
-# مسار تسجيل الدخول للمحل
+# 2. مسار تسجيل الدخول
 @app.route('/api/login', methods=['POST'])
 def login_store():
     data = request.get_json() or {}
@@ -75,7 +75,7 @@ def login_store():
     else:
         return jsonify({'error': 'اسم المستخدم أو كلمة السر غير صحيحة'}), 401
 
-# مسار تسجيل محل جديد (يحفظ في قاعدة البيانات ويولد api_key خاص)
+# 3. مسار إنشاء حساب جديد
 @app.route('/api/register', methods=['POST'])
 def register_store():
     data = request.get_json() or {}
@@ -106,7 +106,7 @@ def register_store():
     except sqlite3.IntegrityError:
         return jsonify({'error': 'اسم المستخدم مستخدم بالفعل'}), 400
 
-# مسار استقبال مبيعات الكاشير باستخدام الـ API Key الخاص بالمحل
+# 4. مسار استقبال الفواتير من المنظومة (الكاشير)
 @app.route('/api/sync-sale', methods=['POST'])
 def sync_sale():
     data = request.get_json() or {}
@@ -115,7 +115,6 @@ def sync_sale():
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
 
-    # البحث عن المحل عبر الـ API Key
     cursor.execute("SELECT id FROM stores WHERE api_key = ?", (api_key,))
     store = cursor.fetchone()
 
@@ -125,8 +124,8 @@ def sync_sale():
 
     store_id = store[0]
     invoice_id = data.get('invoice_id')
-    total_amount = data.get('total_amount')
-    profit = data.get('profit')
+    total_amount = data.get('total_amount', 0)
+    profit = data.get('profit', 0)
     items_count = data.get('items_count', 1)
 
     cursor.execute('''
