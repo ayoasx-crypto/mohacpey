@@ -1,0 +1,16 @@
+{
+  "short_name": "مُحاسبي",
+  "name": "مُحاسبي - مراقبة المبيعات اللحظية",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/2382/2382461.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#020617",
+  "theme_color": "#020617",
+  "display": "standalone",
+  "orientation": "portrait"
+}
