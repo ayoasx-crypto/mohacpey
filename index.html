@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>تطبيق مُحاسبي</title>
     <style>
-        * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
-        body { background: #0b0f19; color: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
+        * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 0; }
+        body { background: #0b0f19; color: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
         .card { background: #151c2c; padding: 25px; border-radius: 20px; border: 1px solid #2a3447; width: 100%; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
         .logo { width: 70px; height: 70px; display: block; margin: 0 auto 10px auto; border-radius: 14px; }
-        h1 { font-size: 20px; color: #10b981; margin: 0 0 5px 0; text-align: center; }
-        p.subtitle { color: #9ca3af; font-size: 13px; margin-bottom: 20px; text-align: center; }
+        h1 { font-size: 20px; color: #10b981; text-align: center; margin-bottom: 5px; }
+        p.subtitle { color: #9ca3af; font-size: 13px; text-align: center; margin-bottom: 20px; }
         
         .tab-buttons { display: flex; gap: 10px; margin-bottom: 20px; background: #1f2937; padding: 5px; border-radius: 10px; }
         .tab-btn { flex: 1; padding: 8px; border: none; background: transparent; color: #9ca3af; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 13px; }
@@ -40,7 +40,7 @@
 <body>
 
 <div class="card">
-    <img src="logo.png" alt="مُحاسبي" class="logo" onerror="this.style.display='none'">
+    <img src="logo.png" alt="مُحاسبي" class="logo">
     <h1>تطبيق مُحاسبي</h1>
     <p class="subtitle">متابعة مبيعات محلك من موبايلك لحظياً</p>
 
@@ -79,7 +79,7 @@
         <button type="submit" class="btn-submit">إنشاء الحساب والحصول على المفتاح</button>
     </form>
 
-    <!-- صندوق النتيجة -->
+    <!-- صندوق عرض الـ API Key -->
     <div id="successBox" class="success-box">
         <h3 style="margin: 0 0 5px 0; font-size: 15px; color: #34d399;">🎉 تم إنشاء الحساب بنجاح!</h3>
         <p style="font-size: 12px; margin: 0; color: #d1fae5;">هذا هو مفتاح الربط (API Key) الخاص بمحلك:</p>
@@ -93,7 +93,7 @@
     </button>
 </div>
 
-<!-- Modal النافذة المنبثقة -->
+<!-- Modal تعليمات الربط -->
 <div class="modal" id="tutorialModal">
     <div class="modal-content">
         <div class="modal-header">
@@ -150,7 +150,7 @@
                 localStorage.setItem('store_name', data.store_name);
                 localStorage.setItem('api_key', data.api_key);
                 alert(`أهلاً بك مجدداً في ${data.store_name}!`);
-                location.reload(); 
+                location.reload();
             } else {
                 alert(data.error || 'فشل تسجيل الدخول');
             }
