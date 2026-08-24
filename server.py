@@ -1,9 +1,10 @@
+import os
 import sqlite3
 import secrets
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 
-app = Flask(__name__, static_folder='.')
+app = Flask(__name__, static_folder='.', static_url_path='')
 CORS(app)
 
 DB_NAME = "pos_system.db"
@@ -43,14 +44,15 @@ def init_db():
 
 init_db()
 
-# مسارات واجهة المستخدم والملفات الثابتة
+# مسار الواجهة الرئيسية
 @app.route('/')
-def home():
+def index():
     return send_from_directory('.', 'index.html')
 
-@app.route('/<path:filename>')
-def serve_static(filename):
-    return send_from_directory('.', filename)
+# مسار باقي ملفات النظام (الصور والـ manifest)
+@app.route('/<path:path>')
+def send_static(path):
+    return send_from_directory('.', path)
 
 # مسار تسجيل محل جديد
 @app.route('/api/register', methods=['POST'])
