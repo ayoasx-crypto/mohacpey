@@ -3,132 +3,175 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مُحاسبي - لوحة المراقبة</title>
-    
-    <!-- PWA Link -->
-    <link rel="manifest" href="/manifest.json">
-    <link rel="apple-touch-icon" href="/logo.png.jpeg">
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    
+    <title>تطبيق مُحاسبي</title>
     <style>
-        .glass {
-            background: rgba(15, 23, 42, 0.75);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
+        * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
+        body { background: #0b0f19; color: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
+        .card { background: #151c2c; padding: 25px; border-radius: 20px; border: 1px solid #2a3447; width: 100%; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+        .logo { width: 70px; height: 70px; display: block; margin: 0 auto 10px auto; border-radius: 14px; }
+        h1 { font-size: 20px; color: #10b981; margin: 0 0 5px 0; text-align: center; }
+        p.subtitle { color: #9ca3af; font-size: 13px; margin-bottom: 20px; text-align: center; }
+        
+        .tab-buttons { display: flex; gap: 10px; margin-bottom: 20px; background: #1f2937; padding: 5px; border-radius: 10px; }
+        .tab-btn { flex: 1; padding: 8px; border: none; background: transparent; color: #9ca3af; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 13px; }
+        .tab-btn.active { background: #10b981; color: #fff; }
+
+        .form-group { margin-bottom: 12px; text-align: right; }
+        label { display: block; font-size: 12px; color: #9ca3af; margin-bottom: 4px; }
+        input { width: 100%; padding: 11px; border-radius: 8px; border: 1px solid #374151; background: #1f2937; color: #fff; font-size: 14px; outline: none; }
+        input:focus { border-color: #10b981; }
+
+        .btn-submit { width: 100%; padding: 12px; background: #10b981; border: none; border-radius: 8px; color: #fff; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 5px; }
+        .btn-submit:hover { background: #059669; }
+
+        .btn-tutorial { width: 100%; padding: 10px; background: transparent; border: 1px solid #374151; border-radius: 8px; color: #38bdf8; font-size: 13px; margin-top: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+
+        /* صندوق النتيجة بعد التسجيل */
+        .success-box { display: none; margin-top: 15px; padding: 15px; background: #064e3b; border: 1px solid #10b981; border-radius: 10px; text-align: center; }
+        .api-key-display { background: #111827; padding: 8px; border-radius: 6px; color: #34d399; font-family: monospace; font-size: 15px; margin: 8px 0; word-break: break-all; border: 1px dashed #10b981; }
+        .btn-copy { background: #3b82f6; border: none; color: white; padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; margin-top: 5px; }
+
+        /* Modal النافذة المنبثقة لشرح الربط */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; padding: 20px; z-index: 100; }
+        .modal-content { background: #151c2c; border-radius: 16px; padding: 20px; max-width: 450px; width: 100%; max-height: 90vh; overflow-y: auto; text-align: right; border: 1px solid #374151; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .close-btn { background: none; border: none; color: #ef4444; font-size: 20px; cursor: pointer; }
+        .step { background: #1f2937; padding: 10px; border-radius: 8px; margin-bottom: 8px; font-size: 13px; border-right: 3px solid #10b981; line-height: 1.5; }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen font-sans p-4 pb-12">
+<body>
 
-    <!-- 1. شاشة تسجيل الدخول -->
-    <div id="login-screen" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 z-50">
-        <div class="glass p-6 rounded-3xl w-full max-w-md border border-slate-800 shadow-2xl text-center">
-            <img src="/logo.png.jpeg" class="w-20 h-20 mx-auto mb-4 rounded-2xl shadow-lg border border-slate-700/50" alt="مُحاسبي">
-            <h2 class="text-2xl font-black text-emerald-400 mb-1">تطبيق مُحاسبي</h2>
-            <p class="text-xs text-slate-400 mb-6">سجّل دخولك لمتابعة مبيعات محلك اللحظية</p>
+<div class="card">
+    <img src="logo.png" alt="مُحاسبي" class="logo" onerror="this.style.display='none'">
+    <h1>تطبيق مُحاسبي</h1>
+    <p class="subtitle">متابعة مبيعات محلك من موبايلك لحظياً</p>
 
-            <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4 text-right">
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">اسم المستخدم</label>
-                    <input type="text" id="username" required placeholder="أدخل اسم المستخدم" class="w-full bg-slate-900 border border-slate-700/60 rounded-xl p-3 text-sm focus:outline-none focus:border-emerald-500 text-slate-100">
-                </div>
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">كلمة السر</label>
-                    <input type="password" id="password" required placeholder="••••••••" class="w-full bg-slate-900 border border-slate-700/60 rounded-xl p-3 text-sm focus:outline-none focus:border-emerald-500 text-slate-100">
-                </div>
-                <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold py-3 rounded-xl transition-all shadow-lg shadow-emerald-500/20">
-                    دخول المحل
-                </button>
-            </form>
-
-            <div class="relative my-6">
-                <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-800"></div></div>
-                <div class="relative flex justify-center text-xs text-slate-500"><span class="bg-slate-950 px-2">أو</span></div>
-            </div>
-
-            <button onclick="loginDemo()" class="w-full bg-slate-900 hover:bg-slate-800 text-slate-300 font-semibold py-3 rounded-xl border border-slate-800 transition-all text-sm">
-                <i class="fa-solid fa-eye text-emerald-400 ml-2"></i> تجربة المنظومة (حساب تجريبي)
-            </button>
-        </div>
+    <!-- أزرار التبديل -->
+    <div class="tab-buttons">
+        <button class="tab-btn active" id="loginTab" onclick="switchTab('login')">تسجيل الدخول</button>
+        <button class="tab-btn" id="registerTab" onclick="switchTab('register')">إنشاء حساب جديد</button>
     </div>
 
-    <!-- 2. لوحة المراقبة الرئيسية (تظهر بعد الدخول) -->
-    <div id="dashboard" class="hidden">
-        <!-- Header -->
-        <div class="flex items-center justify-between mb-6 pt-2">
-            <div>
-                <h1 id="store-title" class="text-2xl font-black text-emerald-400">مُحاسبي</h1>
-                <p class="text-xs text-slate-400">مراقبة المبيعات اللحظية</p>
-            </div>
-            <div class="flex items-center gap-2">
-                <span class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-semibold">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span> متصل
-                </span>
-                <button onclick="logout()" class="bg-slate-900 border border-slate-800 p-2 rounded-xl text-slate-400 hover:text-rose-400 text-xs">
-                    <i class="fa-solid fa-right-from-bracket"></i>
-                </button>
-            </div>
+    <!-- نموذج تسجيل الدخول -->
+    <form id="loginForm">
+        <div class="form-group">
+            <label>اسم المستخدم</label>
+            <input type="text" id="loginUsername" placeholder="أدخل اسم المستخدم" required>
         </div>
+        <div class="form-group">
+            <label>كلمة السر</label>
+            <input type="password" id="loginPassword" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn-submit">دخول المحل</button>
+    </form>
 
-        <!-- API Key Box -->
-        <div class="glass p-3 rounded-2xl mb-6 text-xs flex justify-between items-center border border-slate-800/80">
-            <span class="text-slate-400">مفتاح الربط (API Key):</span>
-            <code id="api-key-display" class="bg-slate-900 text-emerald-400 px-2 py-1 rounded-lg font-mono border border-slate-800">---</code>
+    <!-- نموذج إنشاء حساب جديد -->
+    <form id="registerForm" style="display: none;">
+        <div class="form-group">
+            <label>اسم المحل / التاجر</label>
+            <input type="text" id="regStoreName" placeholder="مثال: محل الأمل" required>
         </div>
+        <div class="form-group">
+            <label>اسم المستخدم (للدخول مستقبلاً)</label>
+            <input type="text" id="regUsername" placeholder="مثال: alamal_store" required>
+        </div>
+        <div class="form-group">
+            <label>كلمة السر</label>
+            <input type="password" id="regPassword" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn-submit">إنشاء الحساب والحصول على المفتاح</button>
+    </form>
 
-        <!-- Dashboard Content -->
-        <div class="grid grid-cols-2 gap-3 mb-6">
-            <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl">
-                <p class="text-xs text-slate-400 mb-1">إجمالي المبيعات</p>
-                <h2 id="total-sales" class="text-xl font-black text-emerald-400">0.00 د.ل</h2>
-            </div>
-            <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl">
-                <p class="text-xs text-slate-400 mb-1">صافي الأرباح</p>
-                <h2 id="total-profit" class="text-xl font-black text-emerald-400">0.00 د.ل</h2>
-            </div>
-        </div>
+    <!-- نتيجة إنشاء الحساب -->
+    <div id="successBox" class="success-box">
+        <h3 style="margin: 0 0 5px 0; font-size: 15px; color: #34d399;">🎉 تم إنشاء الحساب بنجاح!</h3>
+        <p style="font-size: 12px; margin: 0; color: #d1fae5;">هذا هو مفتاح الربط (API Key) الخاص بمحلك:</p>
+        <div id="apiKeyText" class="api-key-display">KEY-XXXXXXXX</div>
+        <button class="btn-copy" onclick="copyApiKey()">📋 نسخ مفتاح الربط</button>
+        <p style="font-size: 11px; color: #9ca3af; margin-top: 8px;">احفظ هذا المفتاح لتضعه في برنامج الكاشير على الكمبيوتر.</p>
     </div>
 
-    <script>
-        const API_URL = ""; // يتم تركها فارغة لتستهدف نفس السيرفر
+    <!-- زر عرض تعليمات الربط -->
+    <button class="btn-tutorial" onclick="openModal()">
+        📺 كيف تقوم بربط منظومتك بالتطبيق؟
+    </button>
+</div>
 
-        function handleLogin(e) {
-            e.preventDefault();
-            const u = document.getElementById('username').value;
-            const p = document.getElementById('password').value;
-            
-            if (u === "demo" && p === "demo123") {
-                loginDemo();
+<!-- Modal نافذة تعليمات الربط -->
+<div class="modal" id="tutorialModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 style="margin:0; color:#10b981; font-size:16px;">طريقة ربط المنظومة بالتطبيق</h3>
+            <button class="close-btn" onclick="closeModal()">✕</button>
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <video width="100%" controls style="border-radius: 10px; background: #000;">
+                <source src="tutorial.mp4" type="video/mp4">
+                متصفحك لا يدعم تشغيل الفيديو.
+            </video>
+        </div>
+
+        <h4 style="color:#fff; margin:0 0 10px 0; font-size:14px;">خطوات الربط:</h4>
+        <div class="step">1️⃣ انسخ <b>مفتاح الـ API</b> الخص بمحلك الظاهر عند إنشاء الحساب.</div>
+        <div class="step">2️⃣ افتح برنامج الكاشير (الكامبيو) على جهاز الكمبيوتر في المحل.</div>
+        <div class="step">3️⃣ اذهب إلى قائمة <b>إعدادات السيرفر والربط Cloud</b>.</div>
+        <div class="step">4️⃣ الصق مفتاح الـ API وضَع رابط السيرفر واضغط <b>حفظ واختبار الاتصال</b>.</div>
+    </div>
+</div>
+
+<script>
+    function switchTab(type) {
+        document.getElementById('successBox').style.display = 'none';
+        if (type === 'login') {
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('registerForm').style.display = 'none';
+            document.getElementById('loginTab').classList.add('active');
+            document.getElementById('registerTab').classList.remove('active');
+        } else {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('registerForm').style.display = 'block';
+            document.getElementById('registerTab').classList.add('active');
+            document.getElementById('loginTab').classList.remove('active');
+        }
+    }
+
+    // إرسال طلب إنشاء حساب جديد للسيرفر
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const store_name = document.getElementById('regStoreName').value;
+        const username = document.getElementById('regUsername').value;
+        const password = document.getElementById('regPassword').value;
+
+        try {
+            const res = await fetch('/api/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ store_name, username, password })
+            });
+            const data = await res.json();
+
+            if (res.ok) {
+                document.getElementById('apiKeyText').innerText = data.api_key;
+                document.getElementById('successBox').style.display = 'block';
+                document.getElementById('registerForm').reset();
             } else {
-                alert("بيانات الدخول غير صحيحة. يمكنك تجربة الحساب التجريبي.");
+                alert(data.error || 'حدث خطأ في التسجيل');
             }
+        } catch (err) {
+            alert('تعذر الاتصال بالسيرفر');
         }
+    });
 
-        function loginDemo() {
-            localStorage.setItem('store_name', 'المحل التجريبي');
-            localStorage.setItem('api_key', 'DEMO-KEY-123456');
-            showDashboard();
-        }
+    function copyApiKey() {
+        const key = document.getElementById('apiKeyText').innerText;
+        navigator.clipboard.writeText(key);
+        alert('تم نسخ مفتاح الـ API بنجاح!');
+    }
 
-        function showDashboard() {
-            document.getElementById('login-screen').classList.add('hidden');
-            document.getElementById('dashboard').classList.remove('hidden');
-            document.getElementById('store-title').innerText = localStorage.getItem('store_name') || 'مُحاسبي';
-            document.getElementById('api-key-display').innerText = localStorage.getItem('api_key') || '---';
-        }
+    function openModal() { document.getElementById('tutorialModal').style.display = 'flex'; }
+    function closeModal() { document.getElementById('tutorialModal').style.display = 'none'; }
+</script>
 
-        function logout() {
-            localStorage.clear();
-            location.reload();
-        }
-
-        // الفحص التلقائي عند فتح التطبيق
-        if (localStorage.getItem('api_key')) {
-            showDashboard();
-        }
-    </script>
 </body>
 </html>
