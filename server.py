@@ -1,9 +1,9 @@
 import sqlite3
 import secrets
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='.')
 CORS(app)
 
 DB_NAME = "pos_system.db"
@@ -43,7 +43,16 @@ def init_db():
 
 init_db()
 
-# مسار تسجيل محل جديد (يولد api_key خاص بالمحل)
+# مسارات واجهة المستخدم والملفات الثابتة
+@app.route('/')
+def home():
+    return send_from_directory('.', 'index.html')
+
+@app.route('/<path:filename>')
+def serve_static(filename):
+    return send_from_directory('.', filename)
+
+# مسار تسجيل محل جديد
 @app.route('/api/register', methods=['POST'])
 def register_store():
     data = request.json
@@ -69,7 +78,7 @@ def register_store():
     except sqlite3.IntegrityError:
         return jsonify({'error': 'اسم المستخدم مستخدم بالفعل'}), 400
 
-# مسار استقبال مبيعات الكاشير باستخدام الـ API Key الخاص بالمحل
+# مسار استقبال مبيعات الكاشير
 @app.route('/api/sync-sale', methods=['POST'])
 def sync_sale():
     data = request.json
@@ -78,7 +87,6 @@ def sync_sale():
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
 
-    # البحث عن المحل عبر الـ API Key
     cursor.execute("SELECT id FROM stores WHERE api_key = ?", (api_key,))
     store = cursor.fetchone()
 
