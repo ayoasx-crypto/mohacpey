@@ -1,10 +1,10 @@
-import os
 import sqlite3
 import secrets
-from flask import Flask, request, jsonify, send_from_directory
+import uuid
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 
-app = Flask(__name__, static_folder='.', static_url_path='')
+app = Flask(__name__)
 CORS(app)
 
 DB_NAME = "pos_system.db"
@@ -44,20 +44,10 @@ def init_db():
 
 init_db()
 
-# مسار الواجهة الرئيسية
-@app.route('/')
-def index():
-    return send_from_directory('.', 'index.html')
-
-# مسار باقي ملفات النظام (الصور والـ manifest)
-@app.route('/<path:path>')
-def send_static(path):
-    return send_from_directory('.', path)
-
-# مسار تسجيل محل جديد
+# مسار تسجيل محل جديد (يحفظ في قاعدة البيانات ويولد api_key خاص)
 @app.route('/api/register', methods=['POST'])
 def register_store():
-    data = request.json
+    data = request.get_json() or {}
     store_name = data.get('store_name')
     username = data.get('username')
     password = data.get('password')
@@ -76,19 +66,25 @@ def register_store():
         ''', (store_name, username, password, api_key))
         conn.commit()
         conn.close()
-        return jsonify({'message': 'تم إنشاء الحساب بنجاح', 'api_key': api_key}), 201
+        return jsonify({
+            'message': 'تم إنشاء الحساب بنجاح',
+            'store_name': store_name,
+            'username': username,
+            'api_key': api_key
+        }), 201
     except sqlite3.IntegrityError:
         return jsonify({'error': 'اسم المستخدم مستخدم بالفعل'}), 400
 
-# مسار استقبال مبيعات الكاشير
+# مسار استقبال مبيعات الكاشير باستخدام الـ API Key الخاص بالمحل
 @app.route('/api/sync-sale', methods=['POST'])
 def sync_sale():
-    data = request.json
+    data = request.get_json() or {}
     api_key = request.headers.get('X-API-KEY') or data.get('api_key')
 
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
 
+    # البحث عن المحل عبر الـ API Key
     cursor.execute("SELECT id FROM stores WHERE api_key = ?", (api_key,))
     store = cursor.fetchone()
 
