@@ -13,7 +13,7 @@ def init_db():
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
     
-    # جدول المحلات/المستخدمين
+    # جدول المحلات
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS stores (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -44,11 +44,17 @@ def init_db():
 
 init_db()
 
-# مسار لعرض الصور والملفات الثابتة مثل اللوجو
+# مسار الصفحة الرئيسية (يعرض index.html)
+@app.route('/')
+def home():
+    return send_from_directory(os.path.dirname(os.path.abspath(__file__)), 'index.html')
+
+# مسار عام لخدمة الملفات الثابتة والصور (مثل logo.jpg) مباشرة
 @app.route('/<path:filename>')
-def serve_file(filename):
+def serve_static_files(filename):
     return send_from_directory(os.path.dirname(os.path.abspath(__file__)), filename)
-# 2. مسار تسجيل الدخول
+
+# مسار تسجيل الدخول
 @app.route('/api/login', methods=['POST'])
 def login_store():
     data = request.get_json() or {}
@@ -74,7 +80,7 @@ def login_store():
     else:
         return jsonify({'error': 'اسم المستخدم أو كلمة السر غير صحيحة'}), 401
 
-# 3. مسار إنشاء حساب جديد
+# مسار إنشاء حساب جديد
 @app.route('/api/register', methods=['POST'])
 def register_store():
     data = request.get_json() or {}
@@ -105,7 +111,7 @@ def register_store():
     except sqlite3.IntegrityError:
         return jsonify({'error': 'اسم المستخدم مستخدم بالفعل'}), 400
 
-# 4. مسار استقبال الفواتير من المنظومة (الكاشير)
+# مسار استقبال الفواتير من الكاشير
 @app.route('/api/sync-sale', methods=['POST'])
 def sync_sale():
     data = request.get_json() or {}
