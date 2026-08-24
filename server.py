@@ -80,6 +80,55 @@ def login_store():
     else:
         return jsonify({'error': 'اسم المستخدم أو كلمة السر غير صحيحة'}), 401
 
+# مسار جلب إحصائيات لوحة التحكم للمحل
+@app.route('/api/stats', methods=['GET'])
+def get_store_stats():
+    api_key = request.headers.get('X-API-KEY') or request.args.get('api_key')
+
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT id, store_name FROM stores WHERE api_key = ?", (api_key,))
+    store = cursor.fetchone()
+
+    if not store:
+        conn.close()
+        return jsonify({'error': 'مفتاح الـ API غير صحيح'}), 401
+
+    store_id = store[0]
+    store_name = store[1]
+
+    # حساب إجمالي المبيعات، الأرباح، وعدد الفواتير
+    cursor.execute('''
+        SELECT COALESCE(SUM(total_amount), 0), COALESCE(SUM(profit), 0), COUNT(id)
+        FROM sales WHERE store_id = ?
+    ''', (store_id,))
+    stats = cursor.fetchone()
+
+    # جلب آخر الفواتير أو حركة المبيعات المباشرة
+    cursor.execute('''
+        SELECT invoice_id, total_amount, profit, created_at
+        FROM sales WHERE store_id = ?
+        ORDER BY id DESC LIMIT 5
+    ''', (store_id,))
+    recent_sales = cursor.fetchall()
+
+    conn.close()
+
+    sales_list = [{
+        'invoice_id': row[0] or 'فاتورة عامة',
+        'total_amount': row[1],
+        'profit': row[2],
+        'created_at': row[3]
+    } for row in recent_sales]
+
+    return jsonify({
+        'store_name': store_name,
+        'total_sales': stats[0],
+        'total_profit': stats[1],
+        'invoices_count': stats[2],
+        'recent_sales': sales_list
+    }), 200
 # مسار إنشاء حساب جديد
 @app.route('/api/register', methods=['POST'])
 def register_store():
