@@ -5,101 +5,130 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>مُحاسبي - لوحة المراقبة</title>
     
+    <!-- PWA Link -->
     <link rel="manifest" href="/manifest.json">
-    
     <link rel="apple-touch-icon" href="/logo.png.jpeg">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        .glass {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen font-sans p-4 pb-12">
-    
-    <!-- Header -->
-    <div class="flex items-center justify-between mb-6 pt-2">
-        <div>
-            <h1 class="text-2xl font-black text-emerald-400">مُحاسبي</h1>
-            <p class="text-xs text-slate-400">مراقبة المبيعات اللحظية</p>
-        </div>
-        <div class="flex items-center gap-2 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-full text-xs text-emerald-400 font-semibold">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-            متصل بالمنظومة
+
+    <!-- 1. شاشة تسجيل الدخول -->
+    <div id="login-screen" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 z-50">
+        <div class="glass p-6 rounded-3xl w-full max-w-md border border-slate-800 shadow-2xl text-center">
+            <img src="/logo.png.jpeg" class="w-20 h-20 mx-auto mb-4 rounded-2xl shadow-lg border border-slate-700/50" alt="مُحاسبي">
+            <h2 class="text-2xl font-black text-emerald-400 mb-1">تطبيق مُحاسبي</h2>
+            <p class="text-xs text-slate-400 mb-6">سجّل دخولك لمتابعة مبيعات محلك اللحظية</p>
+
+            <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4 text-right">
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">اسم المستخدم</label>
+                    <input type="text" id="username" required placeholder="أدخل اسم المستخدم" class="w-full bg-slate-900 border border-slate-700/60 rounded-xl p-3 text-sm focus:outline-none focus:border-emerald-500 text-slate-100">
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">كلمة السر</label>
+                    <input type="password" id="password" required placeholder="••••••••" class="w-full bg-slate-900 border border-slate-700/60 rounded-xl p-3 text-sm focus:outline-none focus:border-emerald-500 text-slate-100">
+                </div>
+                <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold py-3 rounded-xl transition-all shadow-lg shadow-emerald-500/20">
+                    دخول المحل
+                </button>
+            </form>
+
+            <div class="relative my-6">
+                <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-800"></div></div>
+                <div class="relative flex justify-center text-xs text-slate-500"><span class="bg-slate-950 px-2">أو</span></div>
+            </div>
+
+            <button onclick="loginDemo()" class="w-full bg-slate-900 hover:bg-slate-800 text-slate-300 font-semibold py-3 rounded-xl border border-slate-800 transition-all text-sm">
+                <i class="fa-solid fa-eye text-emerald-400 ml-2"></i> تجربة المنظومة (حساب تجريبي)
+            </button>
         </div>
     </div>
 
-    <!-- Stats Cards Grid -->
-    <div class="grid grid-cols-2 gap-3 mb-6">
-        <!-- Total Sales -->
-        <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl col-span-2">
-            <p class="text-xs text-slate-400 mb-1">إجمالي المبيعات</p>
-            <h2 class="text-3xl font-bold text-white"><span id="totalSales">0.00</span> <span class="text-sm font-normal text-emerald-400">د.ل</span></h2>
+    <!-- 2. لوحة المراقبة الرئيسية (تظهر بعد الدخول) -->
+    <div id="dashboard" class="hidden">
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-6 pt-2">
+            <div>
+                <h1 id="store-title" class="text-2xl font-black text-emerald-400">مُحاسبي</h1>
+                <p class="text-xs text-slate-400">مراقبة المبيعات اللحظية</p>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-semibold">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span> متصل
+                </span>
+                <button onclick="logout()" class="bg-slate-900 border border-slate-800 p-2 rounded-xl text-slate-400 hover:text-rose-400 text-xs">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </button>
+            </div>
         </div>
 
-        <!-- Profit -->
-        <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl">
-            <p class="text-xs text-slate-400 mb-1">صافي الأرباح</p>
-            <h3 class="text-xl font-bold text-emerald-400"><span id="totalProfit">0.00</span> <span class="text-xs font-normal">د.ل</span></h3>
+        <!-- API Key Box -->
+        <div class="glass p-3 rounded-2xl mb-6 text-xs flex justify-between items-center border border-slate-800/80">
+            <span class="text-slate-400">مفتاح الربط (API Key):</span>
+            <code id="api-key-display" class="bg-slate-900 text-emerald-400 px-2 py-1 rounded-lg font-mono border border-slate-800">---</code>
         </div>
 
-        <!-- Invoices -->
-        <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl">
-            <p class="text-xs text-slate-400 mb-1">عدد الفواتير</p>
-            <h3 class="text-xl font-bold text-sky-400" id="totalInvoices">0</h3>
-        </div>
-    </div>
-
-    <!-- Live Feed Section -->
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4">
-        <h3 class="text-sm font-bold text-slate-300 mb-4 flex items-center justify-between">
-            <span>آخر الفواتير المسجلة</span>
-            <i class="fa-solid fa-bolt text-emerald-400 text-xs"></i>
-        </h3>
-        
-        <div id="salesList" class="space-y-3">
-            <p class="text-center text-xs text-slate-500 py-4">جاري تحميل البيانات...</p>
+        <!-- Dashboard Content -->
+        <div class="grid grid-cols-2 gap-3 mb-6">
+            <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl">
+                <p class="text-xs text-slate-400 mb-1">إجمالي المبيعات</p>
+                <h2 id="total-sales" class="text-xl font-black text-emerald-400">0.00 د.ل</h2>
+            </div>
+            <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl">
+                <p class="text-xs text-slate-400 mb-1">صافي الأرباح</p>
+                <h2 id="total-profit" class="text-xl font-black text-emerald-400">0.00 د.ل</h2>
+            </div>
         </div>
     </div>
 
     <script>
-        const MANZOMA_URL = 'https://manzoma.onrender.com/api/store-data';
+        const API_URL = ""; // يتم تركها فارغة لتستهدف نفس السيرفر
 
-        async function fetchLiveData() {
-            try {
-                const response = await fetch(MANZOMA_URL);
-                const data = await response.json();
-
-                document.getElementById('totalSales').innerText = data.total_sales.toFixed(2);
-                document.getElementById('totalProfit').innerText = data.total_profit.toFixed(2);
-                document.getElementById('totalInvoices').innerText = data.total_invoices;
-
-                const salesList = document.getElementById('salesList');
-                salesList.innerHTML = '';
-
-                if (data.recent_sales.length === 0) {
-                    salesList.innerHTML = '<p class="text-center text-xs text-slate-500 py-4">لا توجد مبيعات مسجلة حتى الآن</p>';
-                    return;
-                }
-
-                data.recent_sales.forEach(sale => {
-                    const item = document.createElement('div');
-                    item.className = 'flex justify-between items-center bg-slate-950/50 p-3 rounded-xl border border-slate-800/50';
-                    item.innerHTML = `
-                        <div>
-                            <p class="text-sm font-semibold text-slate-200">${sale[1]}</p>
-                            <p class="text-xs text-slate-500">الكمية: ${sale[2]}</p>
-                        </div>
-                        <span class="text-sm font-bold text-emerald-400">${sale[3].toFixed(2)} د.ل</span>
-                    `;
-                    salesList.appendChild(item);
-                });
-
-            } catch (err) {
-                console.error('خطأ في جلب البيانات:', err);
+        function handleLogin(e) {
+            e.preventDefault();
+            const u = document.getElementById('username').value;
+            const p = document.getElementById('password').value;
+            
+            if (u === "demo" && p === "demo123") {
+                loginDemo();
+            } else {
+                alert("بيانات الدخول غير صحيحة. يمكنك تجربة الحساب التجريبي.");
             }
         }
 
-        // جلب البيانات فوراً ثم تحديثها تلقائياً كل 3 ثوانٍ
-        fetchLiveData();
-        setInterval(fetchLiveData, 3000);
+        function loginDemo() {
+            localStorage.setItem('store_name', 'المحل التجريبي');
+            localStorage.setItem('api_key', 'DEMO-KEY-123456');
+            showDashboard();
+        }
+
+        function showDashboard() {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('dashboard').classList.remove('hidden');
+            document.getElementById('store-title').innerText = localStorage.getItem('store_name') || 'مُحاسبي';
+            document.getElementById('api-key-display').innerText = localStorage.getItem('api_key') || '---';
+        }
+
+        function logout() {
+            localStorage.clear();
+            location.reload();
+        }
+
+        // الفحص التلقائي عند فتح التطبيق
+        if (localStorage.getItem('api_key')) {
+            showDashboard();
+        }
     </script>
 </body>
 </html>
