@@ -5,86 +5,87 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>تطبيق مُحاسبي</title>
     <style>
-    * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 0; }
-    body { 
-        background: #0b0f19; 
-        color: #fff; 
-        display: flex; 
-        justify-content: center; 
-        align-items: center; 
-        min-height: 100vh; 
-        padding: 15px; 
-    }
-    .card { 
-        background: #151c2c; 
-        padding: 20px; 
-        border-radius: 20px; 
-        border: 1px solid #2a3447; 
-        width: 100%; 
-        max-width: 400px; 
-        box-shadow: 0 10px 25px rgba(0,0,0,0.5); 
-    }
-    .logo { 
-        width: 65px; 
-        height: 65px; 
-        display: block; 
-        margin: 0 auto 12px auto; 
-        border-radius: 14px; 
-        object-fit: cover; 
-        border: 2px solid #10b981; 
-    }
-    h1 { font-size: 19px; color: #10b981; text-align: center; margin-bottom: 4px; }
-    p.subtitle { color: #9ca3af; font-size: 12px; text-align: center; margin-bottom: 18px; }
-    
-    .tab-buttons { display: flex; gap: 8px; margin-bottom: 18px; background: #1f2937; padding: 4px; border-radius: 10px; }
-    .tab-btn { flex: 1; padding: 10px; border: none; background: transparent; color: #9ca3af; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 13px; }
-    .tab-btn.active { background: #10b981; color: #fff; }
+        * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 0; }
+        body { 
+            background: #0b0f19; 
+            color: #fff; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            padding: 15px; 
+        }
+        .card { 
+            background: #151c2c; 
+            padding: 20px; 
+            border-radius: 20px; 
+            border: 1px solid #2a3447; 
+            width: 100%; 
+            max-width: 400px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5); 
+        }
+        .logo { 
+            width: 65px; 
+            height: 65px; 
+            display: block; 
+            margin: 0 auto 12px auto; 
+            border-radius: 14px; 
+            object-fit: cover; 
+            border: 2px solid #10b981; 
+        }
+        h1 { font-size: 19px; color: #10b981; text-align: center; margin-bottom: 4px; }
+        p.subtitle { color: #9ca3af; font-size: 12px; text-align: center; margin-bottom: 18px; }
+        
+        .tab-buttons { display: flex; gap: 8px; margin-bottom: 18px; background: #1f2937; padding: 4px; border-radius: 10px; }
+        .tab-btn { flex: 1; padding: 10px; border: none; background: transparent; color: #9ca3af; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 13px; }
+        .tab-btn.active { background: #10b981; color: #fff; }
 
-    .form-group { margin-bottom: 12px; text-align: right; }
-    label { display: block; font-size: 12px; color: #9ca3af; margin-bottom: 5px; }
-    input { 
-        width: 100%; 
-        padding: 12px; /* مساحة مناسبة للضغط بالاصبع على الموبايل */
-        border-radius: 10px; 
-        border: 1px solid #374151; 
-        background: #1f2937; 
-        color: #fff; 
-        font-size: 16px; /* منع التكبير التلقائي المزعج في أجهزة آيفون عند التركيز */
-        outline: none; 
-    }
-    input:focus { border-color: #10b981; }
+        .form-group { margin-bottom: 12px; text-align: right; }
+        label { display: block; font-size: 12px; color: #9ca3af; margin-bottom: 5px; }
+        input { 
+            width: 100%; 
+            padding: 12px; 
+            border-radius: 10px; 
+            border: 1px solid #374151; 
+            background: #1f2937; 
+            color: #fff; 
+            font-size: 16px; 
+            outline: none; 
+        }
+        input:focus { border-color: #10b981; }
 
-    .btn-submit { 
-        width: 100%; 
-        padding: 13px; 
-        background: #10b981; 
-        border: none; 
-        border-radius: 10px; 
-        color: #fff; 
-        font-size: 15px; 
-        font-weight: bold; 
-        cursor: pointer; 
-        margin-top: 5px; 
-    }
-    .btn-submit:active { background: #059669; }
+        .btn-submit { 
+            width: 100%; 
+            padding: 13px; 
+            background: #10b981; 
+            border: none; 
+            border-radius: 10px; 
+            color: #fff; 
+            font-size: 15px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            margin-top: 5px; 
+        }
+        .btn-submit:active { background: #059669; }
 
-    .success-box { display: none; margin-top: 15px; padding: 15px; background: #064e3b; border: 1px solid #10b981; border-radius: 10px; text-align: center; }
-    .api-key-display { background: #111827; padding: 10px; border-radius: 8px; color: #34d399; font-family: monospace; font-size: 13px; margin: 8px 0; word-break: break-all; border: 1px dashed #10b981; }
-    .btn-copy { background: #3b82f6; border: none; color: white; padding: 8px 14px; border-radius: 8px; font-size: 13px; cursor: pointer; margin-top: 5px; }
+        .success-box { display: none; margin-top: 15px; padding: 15px; background: #064e3b; border: 1px solid #10b981; border-radius: 10px; text-align: center; }
+        .api-key-display { background: #111827; padding: 10px; border-radius: 8px; color: #34d399; font-family: monospace; font-size: 13px; margin: 8px 0; word-break: break-all; border: 1px dashed #10b981; }
+        .btn-copy { background: #3b82f6; border: none; color: white; padding: 8px 14px; border-radius: 8px; font-size: 13px; cursor: pointer; margin-top: 5px; }
 
-    /* تنسيقات لوحة التحكم Dashboard للموبايل */
-    .dash-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #2a3447; padding-bottom: 12px; margin-bottom: 15px; }
-    .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
-    .stat-card { background: #1f2937; padding: 12px; border-radius: 12px; border: 1px solid #374151; text-align: center; }
-    .stat-card h3 { font-size: 11px; color: #9ca3af; margin-bottom: 5px; }
-    .stat-card p { font-size: 16px; font-weight: bold; color: #10b981; }
-    .btn-logout { background: #ef4444; border: none; color: white; padding: 6px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; }
-</style>
+        /* تنسيقات لوحة التحكم Dashboard للموبايل */
+        .dash-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #2a3447; padding-bottom: 12px; margin-bottom: 15px; }
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+        .stat-card { background: #1f2937; padding: 12px; border-radius: 12px; border: 1px solid #374151; text-align: center; }
+        .stat-card h3 { font-size: 11px; color: #9ca3af; margin-bottom: 5px; }
+        .stat-card p { font-size: 16px; font-weight: bold; color: #10b981; }
+        .btn-logout { background: #ef4444; border: none; color: white; padding: 6px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; }
+    </style>
 </head>
 <body>
 
 <div class="card">
-    <img src="logo.jpg" alt="مُحاسبي" class="logo" onerror="this.style.display='none'">
+    <!-- صورة اللوجو -->
+    <img src="/logo.jpg" alt="مُحاسبي" class="logo" onerror="this.style.display='none'">
 
     <!-- قسم تسجيل الدخول وإنشاء الحساب -->
     <div id="authSection">
@@ -135,8 +136,7 @@
         </div>
     </div>
 
-    <!-- قسم لوحة التحكم الداخلي Dashboard -->
-  <!-- قسم لوحة التحكم الداخلي Dashboard -->
+    <!-- قسم لوحة التحكم الداخلي Dashboard مع الإحصائيات -->
     <div id="dashboardSection" style="display: none;">
         <div class="dash-header">
             <div>
@@ -177,9 +177,9 @@
             <p id="displayApiKey" style="font-size: 11px; color: #38bdf8; word-break: break-all; margin-top: 5px;">-</p>
         </div>
     </div>
+</div>
 
 <script>
-    // التحقق التلقائي عند فتح الصفحة
     window.onload = function() {
         const storeName = localStorage.getItem('store_name');
         const apiKey = localStorage.getItem('api_key');
@@ -256,11 +256,35 @@
         }
     });
 
-    function showDashboard(storeName, apiKey) {
+    // دالة عرض لوحة التحكم وجلب الإحصائيات الحية
+    async function showDashboard(storeName, apiKey) {
         document.getElementById('authSection').style.display = 'none';
         document.getElementById('dashboardSection').style.display = 'block';
         document.getElementById('displayStoreName').innerText = storeName;
         document.getElementById('displayApiKey').innerText = apiKey;
+
+        try {
+            const res = await fetch(`/api/stats?api_key=${apiKey}`);
+            const data = await res.json();
+
+            if (res.ok) {
+                document.getElementById('totalSales').innerText = `${data.total_sales.toFixed(2)} د.ل`;
+                document.getElementById('totalProfit').innerText = `${data.total_profit.toFixed(2)} د.ل`;
+                document.getElementById('invoicesCount').innerText = data.invoices_count;
+
+                const salesContainer = document.getElementById('recentSalesList');
+                if (data.recent_sales && data.recent_sales.length > 0) {
+                    salesContainer.innerHTML = data.recent_sales.map(sale => `
+                        <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #374151; padding: 6px 0;">
+                            <span>فاتورة: ${sale.invoice_id}</span>
+                            <span style="color: #10b981; font-weight: bold;">+${sale.total_amount} د.ل</span>
+                        </div>
+                    `).join('');
+                }
+            }
+        } catch (err) {
+            console.error('تعذر جلب الإحصائيات', err);
+        }
     }
 
     function logout() {
