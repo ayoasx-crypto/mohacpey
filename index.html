@@ -136,11 +136,12 @@
     </div>
 
     <!-- قسم لوحة التحكم الداخلي Dashboard -->
+  <!-- قسم لوحة التحكم الداخلي Dashboard -->
     <div id="dashboardSection" style="display: none;">
         <div class="dash-header">
             <div>
                 <h2 id="displayStoreName" style="font-size: 16px; color: #fff;">اسم المحل</h2>
-                <p style="font-size: 11px; color: #9ca3af;">لوحة متابعة المبيعات</p>
+                <p style="font-size: 11px; color: #9ca3af;">لوحة متابعة المبيعات المباشرة</p>
             </div>
             <button class="btn-logout" onclick="logout()">خروج</button>
         </div>
@@ -156,12 +157,26 @@
             </div>
         </div>
 
-        <div class="stat-card" style="margin-bottom: 15px;">
-            <h3>مفتاح الربط (API Key) الخاص بك:</h3>
-            <p id="displayApiKey" style="font-size: 12px; color: #38bdf8; word-break: break-all; margin-top: 5px;">-</p>
+        <div class="stat-grid" style="grid-template-columns: 1fr; margin-bottom: 12px;">
+            <div class="stat-card" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 18px;">
+                <h3 style="margin: 0;">عدد الفواتير المسجلة</h3>
+                <p id="invoicesCount" style="font-size: 18px; margin: 0;">0</p>
+            </div>
+        </div>
+
+        <!-- قسم حركة المبيعات المباشرة -->
+        <div style="background: #1f2937; padding: 12px; border-radius: 12px; border: 1px solid #374151; margin-bottom: 15px;">
+            <h3 style="font-size: 12px; color: #9ca3af; margin-bottom: 8px; text-align: right;">آخر حركة المبيعات</h3>
+            <div id="recentSalesList" style="font-size: 12px; color: #d1d5db; max-height: 120px; overflow-y: auto;">
+                <p style="text-align: center; color: #6b7280; padding: 10px;">لا توجد مبيعات مسجلة بعد</p>
+            </div>
+        </div>
+
+        <div class="stat-card" style="margin-bottom: 10px;">
+            <h3 style="font-size: 11px;">مفتاح الربط (API Key) الخاص بمحلك:</h3>
+            <p id="displayApiKey" style="font-size: 11px; color: #38bdf8; word-break: break-all; margin-top: 5px;">-</p>
         </div>
     </div>
-</div>
 
 <script>
     // التحقق التلقائي عند فتح الصفحة
