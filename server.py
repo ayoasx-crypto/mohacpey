@@ -1,7 +1,7 @@
 import sqlite3
 import secrets
 import uuid
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 
 app = Flask(__name__)
@@ -43,6 +43,11 @@ def init_db():
     conn.close()
 
 init_db()
+
+# مسار عرض الواجهة الرئيسية (index.html)
+@app.route('/')
+def home():
+    return send_from_directory('.', 'index.html')
 
 # مسار تسجيل محل جديد (يحفظ في قاعدة البيانات ويولد api_key خاص)
 @app.route('/api/register', methods=['POST'])
