@@ -3,14 +3,14 @@
   "name": "مُحاسبي - مراقبة المبيعات اللحظية",
   "icons": [
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/2382/2382461.png",
-      "type": "image/png",
+      "src": "/logo.png.jpeg",
+      "type": "image/jpeg",
       "sizes": "512x512"
     }
   ],
   "start_url": "/",
-  "background_color": "#020617",
-  "theme_color": "#020617",
+  "background_color": "#1e293b",
+  "theme_color": "#1e293b",
   "display": "standalone",
   "orientation": "portrait"
 }
