@@ -1,73 +1,105 @@
-import http.server
-import socketserver
-import json
 import sqlite3
+import secrets
+from flask import Flask, request, jsonify
+from flask_cors import CORS
 
-def get_dashboard_data():
-    conn = sqlite3.connect('pos_system.db')
+app = Flask(__name__)
+CORS(app)
+
+DB_NAME = "pos_system.db"
+
+def init_db():
+    conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
     
-    # 1. إجمالي المبيعات، الأرباح الحقيقية (سعر البيع - سعر الشراء)، وعدد الفواتير الفريدة
-    cursor.execute("""
-        SELECT 
-            COALESCE(SUM(s.quantity * p.sell_price), 0) AS total_sales,
-            COALESCE(SUM(s.quantity * (p.sell_price - p.buy_price)), 0) AS total_profit,
-            COUNT(DISTINCT s.invoice_id) AS total_orders
-        FROM sales s
-        JOIN products p ON s.product_id = p.id
-    """)
-    stats = cursor.fetchone()
-    
-    # 2. أفضل المنتجات مباعاً
-    cursor.execute("""
-        SELECT p.name, COALESCE(SUM(s.quantity), 0) as qty
-        FROM sales s
-        JOIN products p ON s.product_id = p.id
-        GROUP BY p.id
-        ORDER BY qty DESC LIMIT 5
-    """)
-    products_data = cursor.fetchall()
-    
-    # 3. سجل حركة المبيعات المباشرة (تجميع حسب الفاتورة)
-    cursor.execute("""
-        SELECT 
-            s.invoice_id,
-            GROUP_CONCAT(p.name, ' + ') AS products_list,
-            SUM(s.quantity) AS total_qty,
-            SUM(s.quantity * p.sell_price) AS total_amount
-        FROM sales s
-        JOIN products p ON s.product_id = p.id
-        GROUP BY s.invoice_id
-        ORDER BY s.invoice_id DESC LIMIT 10
-    """)
-    history_data = cursor.fetchall()
-    
+    # 1. جدول المحلات/المستخدمين
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS stores (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            store_name TEXT NOT NULL,
+            username TEXT UNIQUE NOT NULL,
+            password TEXT NOT NULL,
+            api_key TEXT UNIQUE NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    ''')
+
+    # 2. إضافة العمود store_id لجدول المبيعات إذا لم يكن موجوداً
+    cursor.execute("PRAGMA table_info(sales)")
+    columns = [column[1] for column in cursor.fetchall()]
+    if 'store_id' not in columns:
+        cursor.execute("ALTER TABLE sales ADD COLUMN store_id INTEGER DEFAULT 1")
+
+    # 3. إنشاء حساب تجريبي افتراضي (Demo Store) إذا لم تكن هناك محلات
+    cursor.execute("SELECT count(*) FROM stores")
+    if cursor.fetchone()[0] == 0:
+        cursor.execute('''
+            INSERT INTO stores (store_name, username, password, api_key)
+            VALUES (?, ?, ?, ?)
+        ''', ("المحل التجريبي", "demo", "demo123", "DEMO-KEY-123456"))
+        
+    conn.commit()
     conn.close()
-    
-    return {
-        "sales": round(stats[0], 2),
-        "profit": round(stats[1], 2),
-        "orders": stats[2],
-        "products": [p[0] for p in products_data] if products_data else ["لا يوجد"],
-        "quantities": [p[1] for p in products_data] if products_data else [0],
-        "history": [{"id": h[0], "product": h[1], "qty": h[2], "total": round(h[3], 2)} for h in history_data]
-    }
 
-class SimpleAPI(http.server.SimpleHTTPRequestHandler):
-    def do_GET(self):
-        if self.path.startswith('/api/data'):
-            self.send_response(200)
-            self.send_header('Content-type', 'application/json')
-            self.send_header('Access-Control-Allow-Origin', '*')
-            self.end_headers()
-            
-            data = get_dashboard_data()
-            self.wfile.write(json.dumps(data).encode())
-        else:
-            super().do_GET()
+init_db()
 
-PORT = 8000
-socketserver.TCPServer.allow_reuse_address = True
-with socketserver.TCPServer(("0.0.0.0", PORT), SimpleAPI) as httpd:
-    print(f"🌐 خادم المتابعة المباشرة يعمل بنجاح على المنفذ {PORT}...")
-    httpd.serve_forever()
+# مسار تسجيل محل جديد (يولد api_key خاص بالمحل)
+@app.route('/api/register', methods=['POST'])
+def register_store():
+    data = request.json
+    store_name = data.get('store_name')
+    username = data.get('username')
+    password = data.get('password')
+
+    if not store_name or not username or not password:
+        return jsonify({'error': 'جميع البيانات مطلوبة'}), 400
+
+    api_key = f"KEY-{secrets.token_hex(8).upper()}"
+
+    try:
+        conn = sqlite3.connect(DB_NAME)
+        cursor = conn.cursor()
+        cursor.execute('''
+            INSERT INTO stores (store_name, username, password, api_key)
+            VALUES (?, ?, ?, ?)
+        ''', (store_name, username, password, api_key))
+        conn.commit()
+        conn.close()
+        return jsonify({'message': 'تم إنشاء الحساب بنجاح', 'api_key': api_key}), 201
+    except sqlite3.IntegrityError:
+        return jsonify({'error': 'اسم المستخدم مستخدم بالفعل'}), 400
+
+# مسار استقبال مبيعات الكاشير باستخدام الـ API Key الخاص بالمحل
+@app.route('/api/sync-sale', methods=['POST'])
+def sync_sale():
+    data = request.json
+    api_key = request.headers.get('X-API-KEY') or data.get('api_key')
+
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+
+    # البحث عن المحل عبر الـ API Key
+    cursor.execute("SELECT id FROM stores WHERE api_key = ?", (api_key,))
+    store = cursor.fetchone()
+
+    if not store:
+        conn.close()
+        return jsonify({'error': 'مفتاح الـ API غير صحيح'}), 401
+
+    store_id = store[0]
+    invoice_id = data.get('invoice_id')
+    total_amount = data.get('total_amount')
+    profit = data.get('profit')
+    items_count = data.get('items_count', 1)
+
+    cursor.execute('''
+        INSERT INTO sales (store_id, invoice_id, total_amount, profit, items_count)
+        VALUES (?, ?, ?, ?, ?)
+    ''', (store_id, invoice_id, total_amount, profit, items_count))
+
+    conn.commit()
+    conn.close()
+    return jsonify({'status': 'success', 'message': 'تم مزامنة الفاتورة'}), 200
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
