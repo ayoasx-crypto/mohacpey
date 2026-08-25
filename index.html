@@ -113,11 +113,11 @@
         <!-- نموذج إنشاء حساب جديد -->
         <form id="registerForm" style="display: none;">
             <div class="form-group">
-                <label>اسم المحل / التاجر</label>
+                <label>اسم المحل  </label>
                 <input type="text" id="regStoreName" placeholder="مثال: محل الأمل" required>
             </div>
             <div class="form-group">
-                <label>اسم المستخدم (للدخول مستقبلاً)</label>
+                <label>اسم المستخدم (للدخول )</label>
                 <input type="text" id="regUsername" placeholder="مثال: alamal_store" required>
             </div>
             <div class="form-group">
@@ -145,7 +145,16 @@
             </div>
             <button class="btn-logout" onclick="logout()">خروج</button>
         </div>
-
+<div class="dash-header">
+            <div>
+                <h2 id="displayStoreName" style="font-size: 16px; color: #fff;">اسم المحل</h2>
+                <p style="font-size: 11px; color: #9ca3af;" id="lastUpdated">آخر تحديث: الآن</p>
+            </div>
+            <div style="display: flex; gap: 6px;">
+                <button onclick="refreshStats()" style="background: #374151; border: none; color: white; padding: 6px 10px; border-radius: 8px; font-size: 12px; cursor: pointer;">🔄</button>
+                <button class="btn-logout" onclick="logout()">خروج</button>
+            </div>
+        </div>
         <!-- البطاقات الرئيسية للإحصائيات -->
         <div class="stat-grid">
             <div class="stat-card">
@@ -298,7 +307,17 @@
         document.getElementById('dashboardSection').style.display = 'none';
         document.getElementById('authSection').style.display = 'block';
     }
-
+function refreshStats() {
+        const apiKey = localStorage.getItem('api_key');
+        const storeName = localStorage.getItem('store_name');
+        if (apiKey && storeName) {
+            showDashboard(storeName, apiKey);
+            // تغيير النص مؤقتاً لتأكيد التحديث
+            const updateTime = document.getElementById('lastUpdated');
+            const now = new Date();
+            updateTime.innerText = `آخر تحديث: ${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+        }
+    }
     function copyApiKey() {
         const key = document.getElementById('apiKeyText').innerText;
         navigator.clipboard.writeText(key);
