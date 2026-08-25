@@ -141,6 +141,9 @@
         <div class="dash-header">
             <div>
                 <h2 id="displayStoreName" style="font-size: 16px; color: #fff;">اسم المحل</h2>
+                
+                <p id="welcomeMessage" style="font-size: 12px; color: #34d399; margin-top: 2px;"></p>
+                
                 <p style="font-size: 11px; color: #9ca3af;">لوحة التحليلات والمبيعات المتقدمة</p>
             </div>
             <button class="btn-logout" onclick="logout()">خروج</button>
@@ -316,11 +319,23 @@ function refreshStats() {
             updateTime.innerText = `آخر تحديث: ${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
         }
     }
+    // تحديد رسالة ترحيبية بحسب الوقت
+    const hours = new Date().getHours();
+    let greeting = "أهلاً بك في محلك";
+    if (hours >= 4 && hours < 12) {
+        greeting = "صباح النشاط والمبيعات العالية ☀️";
+    } else if (hours >= 12 && hours < 17) {
+        greeting = "طابت أوقاتك، استمر في التألق 🌤️";
+    } else {
+        greeting = "مساء الخير، حصاد يوم موفق 🌙";
+    }
+    document.getElementById('welcomeMessage').innerText = greeting;
     function copyApiKey() {
         const key = document.getElementById('apiKeyText').innerText;
         navigator.clipboard.writeText(key);
         alert('تم نسخ مفتاح الـ API بنجاح!');
     }
+    
 </script>
 
 </body>
