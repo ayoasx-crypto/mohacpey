@@ -98,14 +98,14 @@ def get_store_stats():
     store_id = store[0]
     store_name = store[1]
 
-    # حساب إجمالي المبيعات، الأرباح، وعدد الفواتير
+    # حساب إجمالي المبيعات، الأرباح، عدد الفواتير، ومتوسط قيمة الفاتورة
     cursor.execute('''
-        SELECT COALESCE(SUM(total_amount), 0), COALESCE(SUM(profit), 0), COUNT(id)
+        SELECT COALESCE(SUM(total_amount), 0), COALESCE(SUM(profit), 0), COUNT(id), COALESCE(AVG(total_amount), 0)
         FROM sales WHERE store_id = ?
     ''', (store_id,))
     stats = cursor.fetchone()
 
-    # جلب آخر الفواتير أو حركة المبيعات المباشرة
+    # جلب آخر الحركات مع تفاصيل أكثر
     cursor.execute('''
         SELECT invoice_id, total_amount, profit, created_at
         FROM sales WHERE store_id = ?
@@ -127,6 +127,7 @@ def get_store_stats():
         'total_sales': stats[0],
         'total_profit': stats[1],
         'invoices_count': stats[2],
+        'avg_invoice': stats[3],
         'recent_sales': sales_list
     }), 200
 # مسار إنشاء حساب جديد
