@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>إنشاء حساب - مُحاسبي</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <main class="login-page">
+
+        <div class="login-card">
+
+            <div class="logo">
+                مُحاسبي
+            </div>
+
+            <p class="welcome">
+                إنشاء حساب جديد
+            </p>
+
+            <p class="subtitle">
+                ابدأ بإدارة نشاطك التجاري بسهولة
+            </p>
+
+            <form id="registerForm">
+
+                <div class="input-group">
+                    <label for="ownerName">
+                        اسم صاحب المحل
+                    </label>
+
+                    <input
+                        type="text"
+                        id="ownerName"
+                        placeholder="مثال: محمد علي"
+                        required
+                    >
+                </div>
+
+                <div class="input-group">
+                    <label for="shopName">
+                        اسم المحل
+                    </label>
+
+                    <input
+                        type="text"
+                        id="shopName"
+                        placeholder="مثال: متجر الأمل"
+                        required
+                    >
+                </div>
+
+                <div class="input-group">
+                    <label for="email">
+                        البريد الإلكتروني
+                    </label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        placeholder="example@email.com"
+                        required
+                    >
+                </div>
+
+                <div class="input-group">
+                    <label for="phone">
+                        رقم الهاتف
+                    </label>
+
+                    <input
+                        type="tel"
+                        id="phone"
+                        placeholder="09XXXXXXXX"
+                        required
+                    >
+                </div>
+
+                <div class="input-group">
+                    <label for="registerPassword">
+                        كلمة المرور
+                    </label>
+
+                    <input
+                        type="password"
+                        id="registerPassword"
+                        placeholder="أدخل كلمة المرور"
+                        required
+                    >
+                </div>
+
+                <div class="input-group">
+                    <label for="confirmPassword">
+                        تأكيد كلمة المرور
+                    </label>
+
+                    <input
+                        type="password"
+                        id="confirmPassword"
+                        placeholder="أعد كتابة كلمة المرور"
+                        required
+                    >
+                </div>
+
+                <button type="submit" class="login-button">
+                    إنشاء الحساب
+                </button>
+
+            </form>
+
+            <div class="divider">
+                <span>لديك حساب بالفعل؟</span>
+            </div>
+
+            <button
+                class="create-account"
+                onclick="window.location.href='index.html'"
+            >
+                تسجيل الدخول
+            </button>
+
+        </div>
+
+    </main>
+
+</body>
+
+</html>

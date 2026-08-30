@@ -1,0 +1,515 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f5f7fb;
+    color: #172033;
+}
+
+.login-page {
+    min-height: 100vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 420px;
+
+    background: #ffffff;
+
+    padding: 35px 25px;
+
+    border-radius: 24px;
+
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+}
+
+.logo {
+    text-align: center;
+
+    font-size: 32px;
+    font-weight: 800;
+
+    color: #2563eb;
+
+    margin-bottom: 30px;
+}
+
+.welcome {
+    text-align: center;
+
+    font-size: 25px;
+    font-weight: 700;
+
+    margin-bottom: 8px;
+}
+
+.subtitle {
+    text-align: center;
+
+    color: #7a8499;
+
+    font-size: 14px;
+
+    margin-bottom: 30px;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    margin-bottom: 8px;
+}
+
+.input-group input {
+    width: 100%;
+
+    height: 52px;
+
+    padding: 0 15px;
+
+    border: 1px solid #dce1ea;
+
+    border-radius: 12px;
+
+    font-size: 15px;
+
+    outline: none;
+
+    transition: 0.2s;
+}
+
+.input-group input:focus {
+    border-color: #2563eb;
+
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.forgot-password {
+    text-align: left;
+
+    margin-bottom: 20px;
+}
+
+.forgot-password a {
+    color: #2563eb;
+
+    text-decoration: none;
+
+    font-size: 13px;
+}
+
+.login-button {
+    width: 100%;
+
+    height: 52px;
+
+    border: none;
+
+    border-radius: 12px;
+
+    background: #2563eb;
+
+    color: white;
+
+    font-size: 16px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.login-button:hover {
+    background: #1d4ed8;
+}
+
+.divider {
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    margin: 25px 0;
+
+    color: #9aa3b2;
+
+    font-size: 13px;
+}
+
+.divider::before,
+.divider::after {
+    content: "";
+
+    height: 1px;
+
+    flex: 1;
+
+    background: #e5e7eb;
+}
+
+.create-account {
+    width: 100%;
+
+    height: 52px;
+
+    border: 1px solid #2563eb;
+
+    border-radius: 12px;
+
+    background: white;
+
+    color: #2563eb;
+
+    font-size: 15px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.create-account:hover {
+    background: #eff6ff;
+}
+
+/* =========================
+   Dashboard
+========================= */
+
+.dashboard {
+    width: 100%;
+    max-width: 1100px;
+    margin: auto;
+
+    padding: 25px 20px 100px;
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 25px;
+}
+
+.dashboard-header h1 {
+    font-size: 24px;
+    margin-bottom: 6px;
+}
+
+.dashboard-header p {
+    color: #7a8499;
+    font-size: 14px;
+}
+
+.shop-name {
+    background: #eff6ff;
+    color: #2563eb;
+
+    padding: 10px 15px;
+
+    border-radius: 10px;
+
+    font-size: 13px;
+    font-weight: bold;
+}
+
+
+/* الإحصائيات */
+
+.stats-grid {
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 15px;
+
+    margin-bottom: 25px;
+}
+
+.stat-card {
+    background: white;
+
+    padding: 18px;
+
+    border-radius: 18px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+}
+
+.stat-icon {
+    width: 45px;
+    height: 45px;
+
+    border-radius: 12px;
+
+    background: #eff6ff;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 21px;
+}
+
+.stat-card p {
+    color: #7a8499;
+
+    font-size: 12px;
+
+    margin-bottom: 5px;
+}
+
+.stat-card h2 {
+    font-size: 18px;
+}
+
+
+/* الأقسام */
+
+.dashboard-section {
+    background: white;
+
+    padding: 20px;
+
+    border-radius: 20px;
+
+    margin-bottom: 20px;
+
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+}
+
+.section-title {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 20px;
+}
+
+.section-title h2 {
+    font-size: 18px;
+
+    margin-bottom: 5px;
+}
+
+.section-title p {
+    color: #8a94a6;
+
+    font-size: 12px;
+}
+
+.section-title button {
+    border: none;
+
+    background: #eff6ff;
+
+    color: #2563eb;
+
+    padding: 8px 12px;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+}
+
+
+/* المبيعات */
+
+.sales-list {
+    display: flex;
+
+    flex-direction: column;
+}
+
+.sale-item {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 14px 0;
+
+    border-bottom: 1px solid #f0f1f4;
+}
+
+.sale-item:last-child {
+    border-bottom: none;
+}
+
+.product-icon {
+    width: 42px;
+    height: 42px;
+
+    background: #f5f7fb;
+
+    border-radius: 12px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 20px;
+}
+
+.sale-info {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 4px;
+
+    flex: 1;
+}
+
+.sale-info strong {
+    font-size: 14px;
+}
+
+.sale-info span {
+    color: #9aa3b2;
+
+    font-size: 11px;
+}
+
+.sale-price {
+    color: #16a34a;
+
+    font-size: 14px;
+}
+
+
+/* الأكثر مبيعاً */
+
+.products-list {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 18px;
+}
+
+.product-row {
+    display: grid;
+
+    grid-template-columns: 120px 1fr 35px;
+
+    align-items: center;
+
+    gap: 10px;
+
+    font-size: 12px;
+}
+
+.progress {
+    height: 8px;
+
+    background: #edf0f5;
+
+    border-radius: 10px;
+
+    overflow: hidden;
+}
+
+.progress div {
+    height: 100%;
+
+    background: #2563eb;
+
+    border-radius: 10px;
+}
+
+
+/* القائمة السفلية */
+
+.bottom-nav {
+    position: fixed;
+
+    bottom: 0;
+    right: 0;
+    left: 0;
+
+    height: 70px;
+
+    background: white;
+
+    display: flex;
+
+    justify-content: space-around;
+
+    align-items: center;
+
+    border-top: 1px solid #edf0f5;
+
+    z-index: 100;
+}
+
+.bottom-nav a {
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    gap: 5px;
+
+    color: #9aa3b2;
+
+    text-decoration: none;
+
+    font-size: 18px;
+}
+
+.bottom-nav span {
+    font-size: 10px;
+}
+
+.bottom-nav .active {
+    color: #2563eb;
+}
+
+
+/* الكمبيوتر */
+
+@media (min-width: 768px) {
+
+    .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .dashboard {
+        padding: 40px 30px 40px;
+    }
+
+    .bottom-nav {
+        display: none;
+    }
+
+}

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>مُحاسبي</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <main class="login-page">
+
+        <div class="login-card">
+
+            <div class="logo">
+                مُحاسبي
+            </div>
+
+            <p class="welcome">
+                أهلاً بك 👋
+            </p>
+
+            <p class="subtitle">
+                سجّل الدخول لإدارة نشاطك التجاري
+            </p>
+
+            <form id="loginForm">
+
+                <div class="input-group">
+                    <label for="username">
+                        اسم المستخدم أو البريد الإلكتروني
+                    </label>
+
+                    <input
+                        type="text"
+                        id="username"
+                        placeholder="أدخل اسم المستخدم"
+                        required
+                    >
+                </div>
+
+                <div class="input-group">
+                    <label for="password">
+                        كلمة المرور
+                    </label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        placeholder="أدخل كلمة المرور"
+                        required
+                    >
+                </div>
+
+                <div class="forgot-password">
+                    <a href="#">
+                        نسيت كلمة المرور؟
+                    </a>
+                </div>
+
+                <button type="submit" class="login-button">
+                    تسجيل الدخول
+                </button>
+
+            </form>
+
+            <div class="divider">
+                <span>أو</span>
+            </div>
+
+          <button
+    class="create-account"
+    onclick="window.location.href='register.html'"
+>
+    إنشاء حساب جديد
+</button>
+
+
+        </div>
+
+    </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="app.js"></script>
+</body>
+</html>

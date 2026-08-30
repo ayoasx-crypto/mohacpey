@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>التقارير - مُحاسبي</title>
+<link rel="stylesheet" href="style.css">
+<style>
+body{margin:0;background:#f5f7fb;font-family:inherit}
+.reports-page{max-width:720px;margin:auto;padding:18px 14px 90px}
+.reports-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.reports-header h1{margin:0 0 4px;font-size:24px}
+.reports-header p{margin:0;color:#8a94a6;font-size:12px}
+.shop-name{background:#fff;padding:9px 12px;border-radius:12px;font-size:12px;font-weight:700;box-shadow:0 5px 18px rgba(0,0,0,.06)}
+.report-filter,.report-section,.report-stat{background:#fff;border-radius:18px;box-shadow:0 8px 25px rgba(0,0,0,.05)}
+.report-filter{padding:14px;margin-bottom:14px}
+.periods{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+.periods button,.report-actions button{border:0;border-radius:10px;padding:10px 5px;font-family:inherit;font-size:11px;cursor:pointer}
+.periods button{background:#eef4ff;color:#2563eb}
+.periods button.active{background:#2563eb;color:#fff}
+.dates{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}
+.dates input{width:100%;box-sizing:border-box;border:1px solid #e6eaf0;border-radius:10px;padding:9px;font-family:inherit;font-size:11px}
+.report-actions{display:flex;gap:8px;margin-top:9px}
+.report-actions button{flex:1;background:#eef1f5;color:#475569}
+.report-actions #applyDateFilter{background:#2563eb;color:#fff}
+.report-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.report-stat{padding:14px}
+.report-stat p{margin:0 0 5px;color:#8a94a6;font-size:11px}
+.report-stat h2{margin:0;font-size:18px}
+.report-section{padding:14px;margin-bottom:14px}
+.report-section h2{margin:0 0 3px;font-size:16px}
+.report-section p{margin:0 0 12px;color:#8a94a6;font-size:11px}
+#salesChart{display:block;width:100%;height:220px}
+.top-products,.daily-list{display:flex;flex-direction:column;gap:10px}
+.top-row{display:grid;grid-template-columns:1fr 45px;gap:8px;align-items:center}
+.top-name{display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px}
+.bar{height:8px;background:#edf0f5;border-radius:99px;overflow:hidden}.bar div{height:100%;background:#2563eb}
+.top-percent{text-align:left;font-weight:700;font-size:11px}
+.day-row{display:flex;justify-content:space-between;gap:8px;border-bottom:1px solid #f0f1f4;padding:10px 0;font-size:11px}
+.day-row:last-child{border-bottom:0}.muted{color:#8a94a6;font-size:10px}
+.status{text-align:center;color:#8a94a6;font-size:10px;margin-top:10px}
+.bottom-nav{position:fixed;left:0;right:0;bottom:0;height:68px;background:#fff;border-top:1px solid #edf0f5;display:grid;grid-template-columns:repeat(5,1fr);z-index:1000}
+.bottom-nav a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;text-decoration:none;color:#9aa3b2;font-size:9px}.bottom-nav a.active{color:#2563eb}.nav-icon{font-size:18px}
+@media(min-width:768px){.reports-page{max-width:1100px}.report-stats{grid-template-columns:repeat(4,1fr)}.bottom-nav{display:none}}
+</style>
+</head>
+<body>
+<main class="reports-page">
+<header class="reports-header"><div><h1>التقارير</h1><p>تحليل ومتابعة أداء المحل</p></div><div class="shop-name" id="shopName">مُحاسبي</div></header>
+
+<section class="report-filter">
+<div style="font-size:14px;font-weight:700;margin-bottom:10px">الفترة الزمنية</div>
+<div class="periods">
+<button type="button" data-period="today">اليوم</button>
+<button type="button" data-period="week">هذا الأسبوع</button>
+<button type="button" data-period="month" class="active">هذا الشهر</button>
+<button type="button" data-period="all">الكل</button>
+</div>
+<div class="dates"><input id="dateFrom" type="date"><input id="dateTo" type="date"></div>
+<div class="report-actions">
+<button id="applyDateFilter" type="button">تطبيق</button>
+<button id="resetDateFilter" type="button">إعادة ضبط</button>
+<button id="exportReport" type="button">تصدير</button>
+</div>
+</section>
+
+<section class="report-stats">
+<div class="report-stat"><p>إجمالي المبيعات</p><h2 id="reportSales">0 د.ل</h2></div>
+<div class="report-stat"><p>إجمالي الأرباح</p><h2 id="reportProfit">0 د.ل</h2></div>
+<div class="report-stat"><p>عدد الفواتير</p><h2 id="reportInvoices">0</h2></div>
+<div class="report-stat"><p>الوحدات المباعة</p><h2 id="reportUnits">0</h2></div>
+</section>
+
+<section class="report-section"><h2>تطور المبيعات</h2><p>إجمالي المبيعات حسب اليوم</p><canvas id="salesChart"></canvas></section>
+<section class="report-section"><h2>الأكثر مبيعًا</h2><p>حسب عدد الوحدات المباعة</p><div id="topProducts" class="top-products"></div></section>
+<section class="report-section"><h2>ملخص الأيام</h2><p>أداء المبيعات والأرباح لكل يوم</p><div id="dailySummary" class="daily-list"></div><div id="reportStatus" class="status">جاري تحميل التقرير...</div></section>
+</main>
+
+<nav class="bottom-nav">
+<a href="dashboard.html"><span class="nav-icon">⌂</span><span>الرئيسية</span></a>
+<a href="sales.html"><span class="nav-icon">🧾</span><span>المبيعات</span></a>
+<a href="products.html"><span class="nav-icon">📦</span><span>المنتجات</span></a>
+<a href="reports.html" class="active">
+    <span class="nav-icon">📊</span>
+    <span>التقارير</span>
+</a>
+<a href="#"><span class="nav-icon">⚙️</span><span>الإعدادات</span></a>
+</nav>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="reports.js"></script>
+</body>
+</html>

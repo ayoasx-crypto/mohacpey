@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>المبيعات - مُحاسبي</title>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --navy: #071b41;
+            --navy-2: #0d2858;
+            --blue: #3368ff;
+            --blue-2: #5668f5;
+            --text: #14213d;
+            --muted: #8590a6;
+            --bg: #f4f7fb;
+            --card: #ffffff;
+            --line: #e8edf5;
+            --green: #16a34a;
+            --green-bg: #eaf8ef;
+            --purple-bg: #f2edff;
+            --orange-bg: #fff2dd;
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: Tahoma, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+        button, input, select { font: inherit; }
+        button { cursor: pointer; }
+
+        .sales-app {
+            min-height: 100vh;
+            padding-bottom: 82px;
+        }
+
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: var(--navy);
+            color: white;
+            padding: 18px 18px 16px;
+            box-shadow: 0 8px 24px rgba(7, 27, 65, 0.16);
+        }
+        .topbar-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 22px;
+            font-weight: 800;
+        }
+        .brand-bars {
+            color: #4f81ff;
+            font-size: 24px;
+            letter-spacing: -5px;
+        }
+        .topbar-actions { display: flex; gap: 8px; }
+        .icon-btn {
+            width: 42px;
+            height: 42px;
+            border: 0;
+            border-radius: 12px;
+            background: rgba(255,255,255,.1);
+            color: white;
+        }
+        .store-mini {
+            margin-top: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #d9e2f7;
+            font-size: 12px;
+        }
+
+        .content { padding: 18px; }
+        .page-title { margin-bottom: 16px; }
+        .page-title h1 { margin: 0 0 5px; font-size: 26px; }
+        .page-title p { margin: 0; color: var(--muted); font-size: 13px; }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+        .stat-card {
+            background: var(--card);
+            border: 1px solid rgba(228,233,242,.9);
+            border-radius: 18px;
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-height: 104px;
+            box-shadow: 0 8px 20px rgba(18, 38, 63, .05);
+        }
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            display: grid;
+            place-items: center;
+            font-size: 24px;
+            flex: 0 0 auto;
+        }
+        .stat-card:nth-child(1) .stat-icon { background: #def7e8; }
+        .stat-card:nth-child(2) .stat-icon { background: #e4eeff; }
+        .stat-card:nth-child(3) .stat-icon { background: var(--orange-bg); }
+        .stat-card:nth-child(4) .stat-icon { background: var(--purple-bg); }
+        .stat-card p { margin: 0 0 4px; font-size: 11px; color: var(--muted); }
+        .stat-card h2 { margin: 0; font-size: 20px; }
+
+        .panel {
+            background: var(--card);
+            border: 1px solid rgba(228,233,242,.9);
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(18,38,63,.05);
+            margin-bottom: 14px;
+            overflow: hidden;
+        }
+        .filters { padding: 14px; }
+        .search-wrap { position: relative; margin-bottom: 10px; }
+        .search-wrap span { position:absolute; right:13px; top:50%; transform:translateY(-50%); color:#8a95aa; }
+        .search-wrap input,
+        .filters select,
+        .filters input[type="date"] {
+            width: 100%;
+            height: 46px;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 0 40px 0 12px;
+            background: #fff;
+            color: var(--text);
+            outline: none;
+        }
+        .filters select, .filters input[type="date"] { padding: 0 12px; }
+        .filters-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px; }
+        .btn-primary {
+            width: 100%;
+            height: 46px;
+            border: 0;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--blue), var(--blue-2));
+            color: white;
+            font-weight: 700;
+        }
+        .filters-actions { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+        .btn-secondary {
+            height: 46px;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: #fff;
+            color: var(--text);
+            font-weight: 700;
+        }
+
+        .list-head {
+            padding: 14px;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:10px;
+            border-bottom:1px solid var(--line);
+        }
+        .list-head h2 { margin:0; font-size:17px; }
+        .refresh {
+            border:0;
+            background:transparent;
+            color:var(--blue);
+            font-weight:700;
+            padding:0;
+        }
+
+        .sale-card {
+            padding: 14px;
+            border-bottom: 1px solid var(--line);
+        }
+        .sale-card:last-child { border-bottom: none; }
+        .sale-main { display:grid; grid-template-columns:auto 1fr auto; gap:10px; align-items:center; }
+        .sale-id { color:var(--blue); font-weight:800; font-size:14px; }
+        .sale-product { display:flex; align-items:center; gap:10px; min-width:0; }
+        .sale-icon {
+            width: 42px; height:42px; border-radius:12px; background:#f2f5f9;
+            display:grid; place-items:center; font-size:20px; flex:0 0 auto;
+        }
+        .sale-product strong { display:block; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .sale-product span { display:block; color:var(--muted); font-size:11px; margin-top:3px; }
+        .sale-amount { text-align:left; }
+        .sale-amount strong { display:block; font-size:15px; }
+        .profit-pill {
+            display:inline-block;
+            margin-top:5px;
+            padding:4px 8px;
+            border-radius:999px;
+            background:var(--green-bg);
+            color:var(--green);
+            font-size:10px;
+            font-weight:700;
+        }
+        .sale-meta { margin-top:10px; display:flex; justify-content:space-between; gap:10px; color:var(--muted); font-size:11px; }
+        .empty, .loading { padding:28px 16px; text-align:center; color:var(--muted); }
+
+        .pagination {
+            padding: 12px 14px;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            border-top:1px solid var(--line);
+        }
+        .pagination button {
+            min-width: 86px;
+            height: 40px;
+            border:1px solid var(--line);
+            border-radius:10px;
+            background:#fff;
+        }
+        .page-numbers { display:flex; gap:6px; }
+        .page-number {
+            width:38px; height:38px; border-radius:10px; border:1px solid var(--line); background:white;
+        }
+        .page-number.active { background:var(--blue); color:white; border-color:var(--blue); }
+
+        .bottom-nav {
+            position:fixed;
+            right:0; left:0; bottom:0;
+            z-index:60;
+            height:72px;
+            background:var(--navy);
+            display:grid;
+            grid-template-columns:repeat(5,1fr);
+            padding-bottom:env(safe-area-inset-bottom);
+            box-shadow:0 -8px 24px rgba(7,27,65,.15);
+        }
+        .bottom-nav a {
+            color:#d7dff0;
+            text-decoration:none;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
+            gap:4px;
+            font-size:10px;
+        }
+        .bottom-nav a .nav-icon { font-size:21px; }
+        .bottom-nav a.active { margin:7px 5px; border-radius:14px; background:linear-gradient(135deg,var(--blue),var(--blue-2)); color:white; }
+
+        .toast {
+            position:fixed;
+            top:86px;
+            left:50%;
+            transform:translateX(-50%) translateY(-20px);
+            background:#112a57;
+            color:white;
+            padding:10px 14px;
+            border-radius:10px;
+            opacity:0;
+            pointer-events:none;
+            transition:.25s ease;
+            z-index:100;
+            font-size:12px;
+        }
+        .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+        @media (min-width: 768px) {
+            body { background: #edf2f8; }
+            .sales-app { max-width: 1100px; margin: 20px auto; padding-bottom:20px; background:#fff; border-radius:24px; overflow:hidden; box-shadow:0 12px 40px rgba(18,38,63,.08); }
+            .topbar { position:relative; border-radius:24px 24px 0 0; }
+            .content { padding:28px; }
+            .stats-grid { grid-template-columns:repeat(4,minmax(0,1fr)); }
+            .bottom-nav { position:relative; height:auto; max-width:1100px; margin:0 auto; border-radius:0 0 24px 24px; }
+        }
+    </style>
+</head>
+<body>
+<div id="toast" class="toast"></div>
+
+<div class="sales-app">
+    <header class="topbar">
+        <div class="topbar-inner">
+            <div class="brand"><span>مُحاسبي</span><span class="brand-bars">▂▅▇</span></div>
+            <div class="topbar-actions">
+                <button class="icon-btn" id="refreshTop" aria-label="تحديث">↻</button>
+                <button class="icon-btn" aria-label="القائمة">☰</button>
+            </div>
+        </div>
+        <div class="store-mini">
+            <span id="storeName">جاري التحميل...</span>
+            <span id="connectionStatus">● متصل</span>
+        </div>
+    </header>
+
+    <main class="content">
+        <div class="page-title">
+            <h1>المبيعات</h1>
+            <p>عرض ومتابعة عمليات البيع للمحل</p>
+        </div>
+
+        <section class="stats-grid">
+            <div class="stat-card"><div class="stat-icon">💰</div><div><p>إجمالي المبيعات</p><h2 id="salesTotal">0 د.ل</h2></div></div>
+            <div class="stat-card"><div class="stat-icon">📈</div><div><p>إجمالي الأرباح</p><h2 id="profitTotal">0 د.ل</h2></div></div>
+            <div class="stat-card"><div class="stat-icon">🧾</div><div><p>عدد الفواتير</p><h2 id="invoiceTotal">0</h2></div></div>
+            <div class="stat-card"><div class="stat-icon">📦</div><div><p>المنتجات المباعة</p><h2 id="productsTotal">0</h2></div></div>
+        </section>
+
+        <section class="panel filters">
+            <div class="search-wrap">
+                <span>⌕</span>
+                <input id="searchInput" type="search" placeholder="ابحث عن منتج أو رقم العملية...">
+            </div>
+            <select id="productFilter"><option value="">كل المنتجات</option></select>
+            <div class="filters-row">
+                <input id="dateFrom" type="date" aria-label="من تاريخ">
+                <input id="dateTo" type="date" aria-label="إلى تاريخ">
+            </div>
+            <div class="filters-actions">
+                <button id="resetFilters" class="btn-secondary" type="button">إعادة ضبط</button>
+                <button id="exportCsv" class="btn-primary" type="button">⬇ تصدير</button>
+            </div>
+        </section>
+
+        <section class="panel">
+            <div class="list-head">
+                <h2>قائمة المبيعات</h2>
+                <button id="refreshSales" class="refresh" type="button">↻ تحديث</button>
+            </div>
+            <div id="salesList" class="sales-list">
+                <div class="loading">جاري تحميل المبيعات...</div>
+            </div>
+            <div class="pagination">
+                <button id="prevPage" type="button">السابق</button>
+                <div id="pageNumbers" class="page-numbers"></div>
+                <button id="nextPage" type="button">التالي</button>
+            </div>
+        </section>
+    </main>
+
+<nav class="bottom-nav">
+
+    <a href="dashboard.html">
+        <span class="nav-icon">⌂</span>
+        <span>الرئيسية</span>
+    </a>
+
+
+    <a href="sales.html" class="active">
+        <span class="nav-icon">🧾</span>
+        <span>المبيعات</span>
+    </a>
+
+<a href="products.html">
+    <span class="nav-icon">📦</span>
+    <span>المنتجات</span>
+</a>
+
+<a href="reports.html">
+    <span class="nav-icon">📊</span>
+    <span>التقارير</span>
+</a>
+
+<a href="settings.html">
+    <span class="nav-icon">⚙️</span>
+    <span>الإعدادات</span>
+</a>
+</nav>
+
+</div>
+
+<script src="sales.js"></script>
+</body>
+</html>

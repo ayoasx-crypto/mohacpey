@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>لوحة التحكم - مُحاسبي</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <main class="dashboard">
+
+        <!-- الهيدر -->
+
+        <header class="dashboard-header">
+
+            <div>
+                <h1>مرحباً بك 👋</h1>
+                <p>هذه نظرة سريعة على نشاط محلك</p>
+            </div>
+
+            <div class="shop-name">
+                متجر الأمل
+            </div>
+
+        </header>
+
+
+        <!-- الإحصائيات -->
+
+        <section class="stats-grid">
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    💰
+   
+<div>
+    <p>إجمالي المبيعات</p>
+    <h2 id="totalSales">0 د.ل</h2>
+</div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    📈
+                </div>
+
+                <div>
+                    <p>الأرباح</p>
+                    <h2 id="totalProfit">0 د.ل</h2>
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    🧾
+                </div>
+
+                <div>
+                    <p>الفواتير</p>
+                   <h2 id="invoiceCount">0</h2>
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    📦
+                </div>
+
+                <div>
+                    <p>المنتجات المباعة</p>
+                   <h2 id="productsSold">0</h2>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- حركة المبيعات -->
+
+        <section class="dashboard-section">
+
+            <div class="section-title">
+
+                <div>
+                    <h2>حركة المبيعات</h2>
+                    <p>آخر عمليات البيع</p>
+                </div>
+
+                <button>
+                    عرض الكل
+                </button>
+
+            </div>
+
+<div class="sales-list" id="salesList">
+
+    <!-- سيتم عرض آخر عمليات البيع هنا من Supabase -->
+
+</div>
+
+        </section>
+
+
+
+
+<!-- المنتجات الأكثر مبيعاً -->
+
+<section class="dashboard-section">
+
+    <div class="section-title">
+
+        <div>
+            <h2>الأكثر مبيعاً</h2>
+            <p>أفضل المنتجات أداءً</p>
+        </div>
+
+    </div>
+
+    <div class="products-list" id="topProducts">
+
+        <!-- سيتم تحميل المنتجات الأكثر مبيعاً من Supabase -->
+
+    </div>
+
+</section>
+
+
+<!-- التنقل السفلي -->
+
+<nav class="bottom-nav">
+
+    <a class="active">
+        🏠
+        <span>الرئيسية</span>
+    </a>
+
+
+    <a href="sales.html">
+        🧾
+        <span>المبيعات</span>
+    </a>
+
+
+    <a href="products.html">
+        📦
+        <span>المنتجات</span>
+    </a>
+
+
+<a href="reports.html">
+    📊
+    <span>التقارير</span>
+</a>
+
+<a href="settings.html">
+    ⚙️
+    <span>الإعدادات</span>
+</a>
+</nav>
+
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="app.js"></script>
+
+</body>
+</html>

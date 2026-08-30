@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ربط الأنظمة - مُحاسبي</title>
+<link rel="stylesheet" href="style.css">
+<style>
+body{margin:0;background:#f5f7fb;font-family:inherit}.integrations-page{max-width:720px;margin:auto;padding:18px 14px 95px}.integrations-header{background:#071b3b;color:#fff;border-radius:22px;padding:20px 16px;margin-bottom:14px;box-shadow:0 10px 28px rgba(7,27,59,.16)}.integrations-header-top{display:flex;align-items:center;justify-content:space-between;gap:12px}.integrations-header h1{margin:0 0 6px;font-size:24px}.integrations-header p{margin:0;font-size:12px;opacity:.82}.help-button{width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);color:#fff;font-size:19px}.intro-card,.integration-card,.new-integration,.supported-section,.sources-section,.connection-section{background:#fff;border-radius:18px;box-shadow:0 8px 25px rgba(0,0,0,.05);margin-bottom:14px}.intro-card{padding:16px;display:flex;gap:12px;align-items:flex-start}.intro-icon,.section-icon{width:44px;height:44px;border-radius:13px;background:#eef4ff;color:#2563eb;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;font-size:22px}.intro-card h2{margin:0 0 6px;font-size:16px}.intro-card p{margin:0;color:#7d8797;font-size:11px;line-height:1.7}.section-heading{display:flex;align-items:center;gap:9px;padding:15px 15px 11px;font-size:15px;font-weight:800}.step{min-width:26px;height:26px;border-radius:50%;background:#2563eb;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:11px}.integration-card{padding:15px}.integration-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}.system-main{display:flex;gap:10px;align-items:center}.system-logo{width:48px;height:48px;border-radius:13px;background:#eff4fb;display:flex;align-items:center;justify-content:center;font-size:23px}.system-main strong{display:block;font-size:14px;margin-bottom:3px}.system-main span{color:#8b95a5;font-size:10px}.status-badge{border-radius:999px;background:#eaf8ee;color:#23833f;padding:6px 9px;font-size:10px;font-weight:700;white-space:nowrap}.integration-meta{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;margin:14px 0;border:1px solid #edf0f4;border-radius:12px;overflow:hidden}.meta-item{padding:10px;background:#fbfcfe;border:1px solid #edf0f4}.meta-item span{display:block;color:#8791a1;font-size:9px;margin-bottom:5px}.meta-item strong{font-size:11px}.integration-actions{display:grid;grid-template-columns:1.15fr 1fr 1fr;gap:7px}.integration-actions button,.new-integration button,.manage-button{border:1px solid #dce6f7;background:#fff;color:#2563eb;border-radius:10px;padding:10px 6px;font-family:inherit;font-size:10px;cursor:pointer}.integration-actions .danger{color:#ef4444;border-color:#f0caca}.new-integration{padding:15px;border:1px dashed #9cbaf2;text-align:center;background:#f9fbff}.new-integration .plus{width:36px;height:36px;border-radius:50%;background:#2563eb;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:7px}.new-integration strong{display:block;font-size:13px;margin-bottom:3px}.new-integration p{color:#8a94a6;font-size:10px;margin:0 0 10px}.supported-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;padding:0 15px 15px}.supported-card{border:1px solid #edf0f4;border-radius:14px;padding:12px 9px;text-align:center;background:#fcfdff}.supported-card .logo{font-size:23px;margin-bottom:6px}.supported-card strong{display:block;font-size:11px;margin-bottom:5px}.supported-card span{display:inline-block;border-radius:999px;background:#f1f4f8;color:#64748b;padding:4px 7px;font-size:8px}.source-row{display:grid;grid-template-columns:1.1fr .9fr 1fr 1fr;gap:4px;padding:11px 15px;border-top:1px solid #f0f2f5;font-size:9px;align-items:center}.source-row.head{border-top:0;color:#7c8797;font-weight:700;background:#fbfcfe}.source-status{font-weight:700}.manage-button{width:calc(100% - 30px);margin:0 15px 15px;font-weight:700}.connection-section{padding-bottom:15px}.connection-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;margin:0 15px;border:1px solid #edf0f4;border-radius:12px;overflow:hidden}.connection-item{padding:11px;background:#fbfcfe;border:1px solid #edf0f4}.connection-item span{display:block;color:#8892a0;font-size:9px;margin-bottom:5px}.connection-item strong{font-size:10px;word-break:break-word}.bottom-nav{position:fixed;left:0;right:0;bottom:0;height:68px;background:#fff;border-top:1px solid #e9edf3;display:grid;grid-template-columns:repeat(5,1fr);z-index:1000}.bottom-nav a{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4px;color:#98a2b3;text-decoration:none;font-size:9px}.nav-icon{font-size:18px;line-height:1}.integration-toast{position:fixed;right:50%;bottom:80px;transform:translateX(50%) translateY(12px);background:#0f172a;color:#fff;border-radius:12px;padding:10px 14px;font-size:11px;opacity:0;pointer-events:none;transition:.2s;z-index:2000}.integration-toast.show{opacity:1;transform:translateX(50%) translateY(0)}@media(min-width:768px){.integrations-page{max-width:1000px}.supported-grid{grid-template-columns:repeat(5,1fr)}.bottom-nav{display:none}}
+</style>
+<style>
+.integration-modal{position:fixed;inset:0;background:rgba(7,27,59,.48);display:none;align-items:center;justify-content:center;padding:16px;z-index:3000}
+.integration-modal.show{display:flex}
+.integration-modal-card{width:min(100%,430px);max-height:90vh;overflow:auto;background:#fff;border-radius:20px;padding:18px;box-shadow:0 22px 55px rgba(0,0,0,.22)}
+.integration-modal-card h2{margin:0 0 5px;font-size:19px}.integration-modal-card p{margin:0 0 14px;color:#8a94a6;font-size:11px;line-height:1.6}
+.form-group{margin-bottom:11px}.form-group label{display:block;font-size:11px;font-weight:700;margin-bottom:6px;color:#334155}.form-group input,.form-group select{width:100%;box-sizing:border-box;border:1px solid #dfe5ee;border-radius:11px;padding:11px;font-family:inherit;font-size:11px;outline:none;background:#fff}.form-help{font-size:9px;color:#8a94a6;margin-top:5px}.modal-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}.modal-actions button{border:0;border-radius:11px;padding:11px;font-family:inherit;font-size:11px;font-weight:700;cursor:pointer}.modal-test{background:#0f9d6e;color:#fff}.modal-save{background:#2563eb;color:#fff}.modal-cancel{background:#eef1f5;color:#475569}.modal-save:disabled{opacity:.65;cursor:wait}.connection-test{margin-top:9px;background:#f8fafc;border:1px solid #e6ebf2;border-radius:11px;padding:10px;font-size:10px;line-height:1.6}
+</style>
+</head><body>
+<main class="integrations-page">
+<header class="integrations-header"><div class="integrations-header-top"><div><h1>ربط الأنظمة</h1><p>ربط مُحاسبي بنظام إدارة المتجر الحالي</p></div><button class="help-button" id="helpButton" type="button">؟</button></div></header>
+<section class="intro-card"><div class="intro-icon">🔗</div><div><h2>ربط مُحاسبي بنظام متجرك</h2><p>اعرض بيانات نظام إدارة متجرك من خلال مُحاسبي، مثل المبيعات والمنتجات والمخزون، مع متابعة حالة الاتصال والمزامنة.</p></div></section>
+<div class="section-heading"><span class="step">1</span>الأنظمة المرتبطة</div>
+<section id="linkedSystems"></section>
+<section class="new-integration"><div class="plus">+</div><strong>ربط نظام جديد</strong><p>أضف نظام إدارة متجرك لبدء عرض البيانات</p><button id="newIntegrationButton" type="button">اختر نظامًا للربط</button></section>
+<section class="supported-section"><div class="section-heading">الأنظمة المدعومة</div><div class="supported-grid"><div class="supported-card"><div class="logo">🟢</div><strong>سلة</strong><span>نقاط البيع</span></div><div class="supported-card"><div class="logo">🟣</div><strong>Odoo</strong><span>ERP</span></div><div class="supported-card"><div class="logo">🛒</div><strong>متجر إلكتروني</strong><span>API</span></div><div class="supported-card"><div class="logo">🟧</div><strong>ماجنتو</strong><span>متجر إلكتروني</span></div><div class="supported-card"><div class="logo">&lt;/&gt;</div><strong>نظام مخصص</strong><span>API</span></div></div></section>
+<section class="sources-section"><div class="section-heading"><span class="step">4</span>مصادر البيانات</div><div class="source-row head"><span>المصدر</span><span>النوع</span><span>الحالة</span><span>آخر مزامنة</span></div><div id="dataSources"></div><button id="manageSources" class="manage-button" type="button">🗄️ إدارة مصادر البيانات</button></section>
+<section class="connection-section"><div class="section-heading">معلومات الاتصال</div><div class="connection-grid"><div class="connection-item"><span>طريقة الاتصال</span><strong id="connectionMethod">—</strong></div><div class="connection-item"><span>رابط API</span><strong id="apiBaseUrl">—</strong></div><div class="connection-item"><span>حالة الاتصال</span><strong id="connectionStatus">جاري الفحص...</strong></div><div class="connection-item"><span>آخر فحص</span><strong id="lastChecked">—</strong></div></div></section>
+</main><div id="integrationToast" class="integration-toast"></div>
+<div id="integrationModal" class="integration-modal">
+  <div class="integration-modal-card">
+    <h2>🔗 إضافة نظام جديد</h2>
+    <p>
+      أدخل بيانات الاتصال. اختبار الاتصال يتم عبر Supabase Edge Function
+      حتى لا نضع أسرار النظام الخارجي داخل كود التطبيق أو قاعدة البيانات.
+    </p>
+
+    <form id="integrationForm">
+
+      <div class="form-group">
+        <label for="systemName">اسم النظام</label>
+        <input
+          id="systemName"
+          required
+          autocomplete="organization"
+          placeholder="مثال: نظام المتجر"
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="systemType">نوع النظام</label>
+        <select id="systemType" required>
+          <option value="">اختر النوع</option>
+          <option value="pos">نقاط بيع</option>
+          <option value="erp">ERP</option>
+          <option value="ecommerce">متجر إلكتروني</option>
+          <option value="custom">نظام مخصص</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="apiBaseUrlInput">رابط API</label>
+        <input
+          id="apiBaseUrlInput"
+          type="url"
+          inputmode="url"
+          autocomplete="url"
+          placeholder="https://api.example.com"
+        >
+        <div class="form-help">
+          استخدم رابط endpoint يمكنه الرد بطلب GET.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="apiAuthType">طريقة المصادقة</label>
+        <select id="apiAuthType">
+          <option value="bearer">Bearer Token</option>
+          <option value="api-key">X-API-Key</option>
+          <option value="none">بدون مفتاح</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="apiTokenInput">مفتاح / Token</label>
+        <input
+          id="apiTokenInput"
+          type="password"
+          autocomplete="off"
+          placeholder="API Token"
+        >
+        <div class="form-help">
+          لا يتم حفظ هذا المفتاح في جدول integrations.
+        </div>
+      </div>
+
+      <div
+        class="connection-test"
+        id="integrationFormStatus"
+      >
+        الحالة: لم يتم اختبار الاتصال بعد.
+      </div>
+
+      <div class="modal-actions">
+        <button
+          type="button"
+          class="modal-test"
+          id="testIntegration"
+        >
+          🔌 اختبار الاتصال
+        </button>
+
+        <button
+          type="submit"
+          class="modal-save"
+          id="saveIntegration"
+        >
+          💾 حفظ الربط
+        </button>
+
+        <button
+          type="button"
+          class="modal-cancel"
+          id="cancelIntegration"
+        >
+          إلغاء
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<nav class="bottom-nav"><a href="dashboard.html"><span class="nav-icon">⌂</span><span>الرئيسية</span></a><a href="sales.html"><span class="nav-icon">🧾</span><span>المبيعات</span></a><a href="products.html"><span class="nav-icon">📦</span><span>المنتجات</span></a><a href="reports.html"><span class="nav-icon">📊</span><span>التقارير</span></a><a href="settings.html"><span class="nav-icon">⚙️</span><span>الإعدادات</span></a></nav>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="integrations.js"></script></body></html>

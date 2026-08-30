@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الإعدادات - مُحاسبي</title>
+<link rel="stylesheet" href="style.css">
+<style>
+body{margin:0;background:#f5f7fb;font-family:inherit}.settings-page{max-width:720px;margin:auto;padding:18px 14px 94px}.settings-header{background:#071b3b;color:#fff;border-radius:22px;padding:20px 16px;margin-bottom:14px;box-shadow:0 10px 28px rgba(7,27,59,.16)}.settings-header h1{margin:0 0 6px;font-size:24px}.settings-header p{margin:0;font-size:12px;opacity:.82}.settings-shop-name{margin-top:14px;display:inline-flex;gap:8px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);border-radius:12px;padding:9px 12px;font-size:12px;font-weight:700}.settings-card{background:#fff;border-radius:18px;margin-bottom:14px;box-shadow:0 8px 25px rgba(0,0,0,.05);overflow:hidden}.settings-card-title{display:flex;align-items:center;gap:10px;padding:15px 15px 12px;font-size:15px;font-weight:800}.settings-card-title .title-icon{width:36px;height:36px;border-radius:11px;display:inline-flex;align-items:center;justify-content:center;background:#eef4ff;color:#2563eb;font-size:18px}.settings-rows{padding:0 15px 14px}.settings-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-top:1px solid #f0f2f5;font-size:12px}.settings-row:first-child{border-top:0}.settings-row .label{color:#7e8797}.settings-row .value{text-align:left;font-weight:700;color:#182233;word-break:break-word}.status-box{margin:0 15px 14px;background:#effaf2;border:1px solid #cdebd3;border-radius:14px;padding:14px}.status-main{display:flex;align-items:center;justify-content:space-between;gap:10px}.status-main strong{color:#26753a;font-size:13px}.status-dot{width:10px;height:10px;background:#35a853;border-radius:50%;display:inline-block;margin-left:6px}.status-sub{margin-top:6px;color:#6f7d70;font-size:10px}.settings-action{width:calc(100% - 30px);margin:0 15px 14px;border:1px solid #2563eb;background:#fff;color:#2563eb;border-radius:12px;padding:11px 12px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer}.settings-action.danger{border-color:#ef4444;color:#ef4444}.settings-inline{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%}.toggle{position:relative;width:48px;height:28px;flex:0 0 auto}.toggle input{opacity:0;width:0;height:0}.toggle-track{position:absolute;inset:0;background:#dfe5ee;border-radius:99px;cursor:pointer}.toggle-track:after{content:"";position:absolute;width:22px;height:22px;top:3px;right:3px;background:#fff;border-radius:50%;box-shadow:0 2px 5px rgba(0,0,0,.12);transition:.2s}.toggle input:checked+.toggle-track{background:#2563eb}.toggle input:checked+.toggle-track:after{transform:translateX(-20px)}.bottom-nav{position:fixed;left:0;right:0;bottom:0;height:68px;background:#fff;border-top:1px solid #e9edf3;display:grid;grid-template-columns:repeat(5,1fr);z-index:1000}.bottom-nav a{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4px;color:#98a2b3;text-decoration:none;font-size:9px}.bottom-nav a.active{color:#2563eb}.nav-icon{font-size:18px}.settings-toast{position:fixed;right:50%;bottom:82px;transform:translateX(50%) translateY(12px);background:#0f172a;color:#fff;border-radius:12px;padding:10px 14px;font-size:11px;opacity:0;pointer-events:none;transition:.2s;z-index:2000}.settings-toast.show{opacity:1;transform:translateX(50%) translateY(0)}.modal-backdrop{position:fixed;inset:0;background:rgba(7,27,59,.45);display:none;align-items:center;justify-content:center;padding:16px;z-index:2500}.modal-backdrop.show{display:flex}.password-modal{width:min(100%,420px);background:#fff;border-radius:18px;padding:18px;box-shadow:0 20px 45px rgba(0,0,0,.2)}.password-modal h3{margin:0 0 6px;font-size:18px}.password-modal p{margin:0 0 14px;color:#8a94a6;font-size:11px}.password-modal input{width:100%;box-sizing:border-box;border:1px solid #dfe5ee;border-radius:11px;padding:11px;margin-bottom:9px;font-family:inherit}.modal-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.modal-actions button{border:0;border-radius:11px;padding:11px;font-family:inherit;cursor:pointer;font-weight:700}#savePassword{background:#2563eb;color:#fff}#cancelPassword{background:#edf1f5;color:#475569}@media(min-width:768px){.settings-page{max-width:980px}.bottom-nav{display:none}}
+</style>
+</head>
+<body>
+<main class="settings-page">
+<header class="settings-header"><h1>الإعدادات ⚙️</h1><p>إدارة بيانات المحل والحساب والاتصال</p><div class="settings-shop-name">🏪 <span id="headerShopName">مُحاسبي</span></div></header>
+<section class="settings-card"><div class="settings-card-title"><span class="title-icon">🏪</span>معلومات المحل</div><div class="settings-rows">
+<div class="settings-row"><span class="label">اسم المحل</span><span class="value" id="shopName">—</span></div>
+<div class="settings-row"><span class="label">رقم الهاتف</span><span class="value" id="shopPhone">—</span></div>
+<div class="settings-row"><span class="label">العنوان</span><span class="value" id="shopAddress">—</span></div>
+<div class="settings-row"><span class="label">رقم المحل (ID)</span><span class="value" id="shopId">—</span></div>
+<div class="settings-row"><span class="label">تاريخ التسجيل</span><span class="value" id="shopCreatedAt">—</span></div>
+</div></section>
+<section class="settings-card"><div class="settings-card-title"><span class="title-icon">👤</span>معلومات الحساب</div><div class="settings-rows">
+<div class="settings-row"><span class="label">البريد الإلكتروني</span><span class="value" id="accountEmail">—</span></div>
+<div class="settings-row"><span class="label">الاسم</span><span class="value" id="accountName">—</span></div>
+<div class="settings-row"><span class="label">الدور</span><span class="value" id="accountRole">—</span></div>
+<div class="settings-row"><span class="label">حالة الحساب</span><span class="value" id="accountStatus">—</span></div>
+</div><button type="button" id="changePasswordButton" class="settings-action">🔒 تغيير كلمة المرور</button></section>
+<section class="settings-card"><div class="settings-card-title"><span class="title-icon">🔗</span>حالة الاتصال بالنظام</div>
+<div class="status-box"><div class="status-main"><strong><span class="status-dot"></span><span id="connectionText">متصل بالنظام</span></strong><span>☁️</span></div><div class="status-sub" id="connectionSub">يتم فحص الاتصال...</div></div>
+<div class="settings-rows"><div class="settings-row"><span class="label">حالة Supabase</span><span class="value" id="supabaseStatus">فحص...</span></div><div class="settings-row"><span class="label">Realtime</span><span class="value" id="realtimeStatus">فحص...</span></div><div class="settings-row"><span class="label">آخر تحديث</span><span class="value" id="lastSync">—</span></div></div>
+
+
+<button type="button" id="refreshConnection" class="settings-action">🔄 تحديث حالة الاتصال الآن</button></section>
+
+<a
+    href="integrations.html"
+    class="settings-action"
+    style="
+        display:block;
+        box-sizing:border-box;
+        text-align:center;
+        text-decoration:none;
+    "
+>
+    🔗 ربط الأنظمة
+</a>
+
+<section class="settings-card"><div class="settings-card-title"><span class="title-icon">🎨</span>تفضيلات التطبيق</div><div class="settings-rows">
+<div class="settings-row"><div class="settings-inline"><span class="label">الوضع الداكن</span><label class="toggle"><input id="darkModeToggle" type="checkbox"><span class="toggle-track"></span></label></div></div>
+<div class="settings-row"><span class="label">اللغة</span><span class="value">العربية</span></div><div class="settings-row"><span class="label">العملة</span><span class="value">دينار ليبي (د.ل)</span></div>
+<div class="settings-row"><div class="settings-inline"><span class="label">تنبيهات التحديث</span><label class="toggle"><input id="notificationsToggle" type="checkbox" checked><span class="toggle-track"></span></label></div></div></div></section>
+<section class="settings-card"><div class="settings-card-title"><span class="title-icon">ℹ️</span>معلومات التطبيق</div><div class="settings-rows"><div class="settings-row"><span class="label">اسم التطبيق</span><span class="value">مُحاسبي</span></div><div class="settings-row"><span class="label">الإصدار</span><span class="value">1.0.0</span></div><div class="settings-row"><span class="label">الدعم الفني</span><span class="value">متاح</span></div></div><div style="text-align:center;color:#8a94a6;font-size:10px;padding:6px 0 14px">مُحاسبي — نظام عرض ومراقبة بيانات المحل</div></section>
+<button type="button" id="logoutButton" class="settings-action danger">🚪 تسجيل الخروج</button>
+</main>
+<div id="passwordModal" class="modal-backdrop"><div class="password-modal"><h3>تغيير كلمة المرور</h3><p>أدخل كلمة المرور الجديدة ثم أكدها.</p><input id="newPassword" type="password" placeholder="كلمة المرور الجديدة"><input id="confirmPassword" type="password" placeholder="تأكيد كلمة المرور"><div class="modal-actions"><button id="savePassword" type="button">حفظ</button><button id="cancelPassword" type="button">إلغاء</button></div></div></div>
+<div id="settingsToast" class="settings-toast"></div>
+<nav class="bottom-nav"><a href="dashboard.html"><span class="nav-icon">⌂</span><span>الرئيسية</span></a><a href="sales.html"><span class="nav-icon">🧾</span><span>المبيعات</span></a><a href="products.html"><span class="nav-icon">📦</span><span>المنتجات</span></a><a href="reports.html"><span class="nav-icon">📊</span><span>التقارير</span></a><a href="settings.html" class="active"><span class="nav-icon">⚙️</span><span>الإعدادات</span></a></nav>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="settings.js"></script>
+</body></html>

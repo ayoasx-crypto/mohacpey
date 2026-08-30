@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>المنتجات - مُحاسبي</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --navy:#071b41;
+            --navy-2:#0d2858;
+            --blue:#3368ff;
+            --blue-2:#5668f5;
+            --text:#14213d;
+            --muted:#8590a6;
+            --bg:#f4f7fb;
+            --card:#fff;
+            --line:#e8edf5;
+            --green:#16a34a;
+            --green-bg:#eaf8ef;
+            --orange:#ea8a00;
+            --orange-bg:#fff2dd;
+            --red:#dc2626;
+            --red-bg:#feecec;
+            --purple-bg:#f2edff;
+        }
+        *{box-sizing:border-box}
+        body{margin:0;font-family:Tahoma,Arial,sans-serif;background:var(--bg);color:var(--text)}
+        button,input,select{font:inherit}button{cursor:pointer}
+        .products-app{min-height:100vh;padding-bottom:86px}
+        .topbar{position:sticky;top:0;z-index:50;background:var(--navy);color:#fff;padding:18px;box-shadow:0 8px 24px rgba(7,27,65,.16)}
+        .topbar-inner{display:flex;align-items:center;justify-content:space-between;gap:12px}
+        .brand{display:flex;align-items:center;gap:10px;font-size:22px;font-weight:800}.brand-bars{color:#4f81ff;font-size:24px;letter-spacing:-5px}
+        .icon-btn{width:42px;height:42px;border:0;border-radius:12px;background:rgba(255,255,255,.1);color:#fff;font-size:20px}
+        .topbar-actions{display:flex;gap:8px}.store-mini{margin-top:14px;display:flex;justify-content:space-between;align-items:center;color:#d9e2f7;font-size:12px}
+        .content{padding:18px}.page-title{margin-bottom:16px}.page-title h1{margin:0 0 5px;font-size:26px}.page-title p{margin:0;color:var(--muted);font-size:13px}
+        .stats-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:14px}
+        .stat-card{background:var(--card);border:1px solid rgba(228,233,242,.9);border-radius:18px;padding:14px;display:flex;align-items:center;gap:12px;min-height:104px;box-shadow:0 8px 20px rgba(18,38,63,.05)}
+        .stat-icon{width:48px;height:48px;border-radius:16px;display:grid;place-items:center;font-size:24px;flex:0 0 auto}
+        .stat-card:nth-child(1) .stat-icon{background:#def7e8}.stat-card:nth-child(2) .stat-icon{background:#e4eeff}.stat-card:nth-child(3) .stat-icon{background:var(--orange-bg)}.stat-card:nth-child(4) .stat-icon{background:var(--purple-bg)}
+        .stat-card p{margin:0 0 4px;font-size:11px;color:var(--muted)}.stat-card h2{margin:0;font-size:20px}
+        .panel{background:var(--card);border:1px solid rgba(228,233,242,.9);border-radius:20px;box-shadow:0 8px 20px rgba(18,38,63,.05);margin-bottom:14px;overflow:hidden}
+        .filters{padding:14px}.search-wrap{position:relative;margin-bottom:10px}.search-wrap span{position:absolute;right:13px;top:50%;transform:translateY(-50%);color:#8a95aa}.search-wrap input{width:100%;height:46px;border:1px solid var(--line);border-radius:12px;padding:0 40px 0 12px;background:#fff;color:var(--text);outline:none}
+        .filters-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.filters select{width:100%;height:46px;border:1px solid var(--line);border-radius:12px;padding:0 12px;background:#fff;color:var(--text);outline:none}
+        .list-head{padding:14px;display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:1px solid var(--line)}.list-head h2{margin:0;font-size:17px}.refresh{border:0;background:transparent;color:var(--blue);font-weight:700;padding:0}
+        .product-card{padding:15px;border-bottom:1px solid var(--line)}.product-card:last-child{border-bottom:0}
+        .product-main{display:grid;grid-template-columns:auto 1fr auto;gap:11px;align-items:center}.product-icon{width:46px;height:46px;border-radius:14px;background:#f2f5f9;display:grid;place-items:center;font-size:22px}
+        .product-info{min-width:0}.product-info strong{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.product-info span{display:block;margin-top:4px;color:var(--muted);font-size:11px}
+        .product-price{text-align:left}.product-price strong{display:block;font-size:15px}.product-price span{display:block;margin-top:5px;color:var(--muted);font-size:10px}
+        .product-meta{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:11px;font-size:11px;color:var(--muted)}
+        .stock-badge{display:inline-block;padding:5px 8px;border-radius:999px;font-weight:700}.stock-good{background:var(--green-bg);color:var(--green)}.stock-low{background:var(--orange-bg);color:var(--orange)}.stock-out{background:var(--red-bg);color:var(--red)}
+        .empty,.loading{padding:28px 16px;text-align:center;color:var(--muted)}
+        .pagination{padding:12px 14px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--line)}.pagination button{min-width:86px;height:40px;border:1px solid var(--line);border-radius:10px;background:#fff}.page-numbers{display:flex;gap:6px}.page-number{width:38px;height:38px;border-radius:10px;border:1px solid var(--line);background:#fff}.page-number.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+        .bottom-nav{position:fixed;right:0;left:0;bottom:0;z-index:60;height:72px;background:var(--navy);display:grid;grid-template-columns:repeat(5,1fr);padding-bottom:env(safe-area-inset-bottom);box-shadow:0 -8px 24px rgba(7,27,65,.15)}
+        .bottom-nav a{color:#d7dff0;text-decoration:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:10px}.bottom-nav a .nav-icon{font-size:21px}.bottom-nav a.active{margin:7px 5px;border-radius:14px;background:linear-gradient(135deg,var(--blue),var(--blue-2));color:#fff}
+        .toast{position:fixed;top:86px;left:50%;transform:translateX(-50%) translateY(-20px);background:#112a57;color:#fff;padding:10px 14px;border-radius:10px;opacity:0;pointer-events:none;transition:.25s ease;z-index:100;font-size:12px}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+        @media (min-width:768px){body{background:#edf2f8}.products-app{max-width:1100px;margin:20px auto;padding-bottom:20px;background:#fff;border-radius:24px;overflow:hidden;box-shadow:0 12px 40px rgba(18,38,63,.08)}.topbar{position:relative;border-radius:24px 24px 0 0}.content{padding:28px}.stats-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.bottom-nav{position:relative;height:auto;max-width:1100px;margin:0 auto;border-radius:0 0 24px 24px}}
+    </style>
+</head>
+<body>
+<div id="toast" class="toast"></div>
+
+<div class="products-app">
+    <header class="topbar">
+        <div class="topbar-inner">
+            <div class="brand"><span>مُحاسبي</span><span class="brand-bars">▂▅▇</span></div>
+            <div class="topbar-actions">
+                <button class="icon-btn" id="refreshTop" type="button" aria-label="تحديث">↻</button>
+            </div>
+        </div>
+        <div class="store-mini">
+            <span id="storeName">جاري التحميل...</span>
+            <span id="connectionStatus">● متصل</span>
+        </div>
+    </header>
+
+    <main class="content">
+        <div class="page-title">
+            <h1>المنتجات</h1>
+            <p>عرض المنتجات والأسعار والمخزون</p>
+        </div>
+
+        <section class="stats-grid">
+            <div class="stat-card"><div class="stat-icon">📦</div><div><p>عدد المنتجات</p><h2 id="productsCount">0</h2></div></div>
+            <div class="stat-card"><div class="stat-icon">💰</div><div><p>قيمة البيع للمخزون</p><h2 id="stockSalesValue">0 د.ل</h2></div></div>
+            <div class="stat-card"><div class="stat-icon">⚠️</div><div><p>مخزون منخفض</p><h2 id="lowStockCount">0</h2></div></div>
+            <div class="stat-card"><div class="stat-icon">🚫</div><div><p>نفد المخزون</p><h2 id="outOfStockCount">0</h2></div></div>
+        </section>
+
+        <section class="panel filters">
+            <div class="search-wrap">
+                <span>⌕</span>
+                <input id="searchInput" type="search" placeholder="ابحث عن منتج..."></div>
+            <div class="filters-row">
+                <select id="stockFilter">
+                    <option value="">كل المخزون</option>
+                    <option value="good">متوفر</option>
+                    <option value="low">مخزون منخفض</option>
+                    <option value="out">نفد المخزون</option>
+                </select>
+                <button id="resetFilters" class="btn-reset" type="button" style="height:46px;border:1px solid #e8edf5;border-radius:12px;background:#fff;color:#14213d;font-weight:700;">إعادة ضبط</button>
+            </div>
+        </section>
+
+        <section class="panel">
+            <div class="list-head">
+                <h2>قائمة المنتجات</h2>
+                <button id="refreshProducts" class="refresh" type="button">↻ تحديث</button>
+            </div>
+            <div id="productsList" class="products-list">
+                <div class="loading">جاري تحميل المنتجات...</div>
+            </div>
+            <div class="pagination">
+                <button id="prevPage" type="button">السابق</button>
+                <div id="pageNumbers" class="page-numbers"></div>
+                <button id="nextPage" type="button">التالي</button>
+            </div>
+        </section>
+    </main>
+
+    <nav class="bottom-nav">
+        <a href="dashboard.html"><span class="nav-icon">⌂</span><span>الرئيسية</span></a>
+        <a href="sales.html"><span class="nav-icon">🧾</span><span>المبيعات</span></a>
+        <a href="products.html" class="active"><span class="nav-icon">📦</span><span>المنتجات</span></a>
+        <a href="reports.html">
+    <span class="nav-icon">📊</span>
+    <span>التقارير</span>
+
+    
+<a href="settings.html">
+    <span class="nav-icon">⚙️</span>
+    <span>الإعدادات</span>
+</a>
+
+    </nav>
+</div>
+
+<script src="products.js"></script>
+</body>
+</html>
